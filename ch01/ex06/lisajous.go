@@ -12,7 +12,6 @@ import (
 )
 
 var palette = []color.Color{
-	color.Black,
 	color.RGBA{255, 0, 0, 1},
 	color.RGBA{255, 165, 0, 1},
 	color.RGBA{255, 255, 0, 1},
@@ -20,6 +19,7 @@ var palette = []color.Color{
 	color.RGBA{0, 0, 255, 1},
 	color.RGBA{75, 0, 130, 1},
 	color.RGBA{238, 130, 238, 1},
+	color.Black,
 }
 
 func main() {
@@ -62,7 +62,7 @@ func lisajous(out io.Writer) {
 		for t := 0.0; t < cycles*2*math.Pi; t += res {
 			x := math.Sin(t)
 			y := math.Sin(t*freq + phase)
-			colorIdx := uint8(int(math.Abs(x)*7) + 1)
+			colorIdx := uint8(int((x + 1) * 7 / 2))
 			img.SetColorIndex(size+int(x*size+0.5), size+int(y*size+0.5), colorIdx)
 		}
 		phase += 0.1
