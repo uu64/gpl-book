@@ -1,0 +1,51 @@
+Get "https://www.tmail.com": dial tcp: lookup www.tmail.com: no such host
+Get "https://www.amazon.in": dial tcp: lookup www.amazon.in: no such host
+Get "https://www.microsoft.com": dial tcp: lookup www.microsoft.com: no such host
+Get "https://www.xinhuanet.com": remote error: tls: handshake failure
+0.18s  102147 https://www.qq.com
+0.37s   16012 https://google.com
+0.39s   73675 https://www.wikipedia.org
+0.42s   74615 https://twitter.com
+0.44s  270516 https://www.yy.com
+0.46s  158040 https://panda.tv
+0.51s    9078 https://myshopify.com
+0.52s  207616 https://stackoverflow.com
+0.57s  239071 https://chaturbate.com
+0.60s   55246 https://www.aliexpress.com
+0.72s  152706 https://www.zhanqi.tv
+0.82s   16335 https://google.com.hk
+0.92s   24339 https://www.alipay.com
+0.94s  110393 https://twitch.tv
+0.97s    6707 https://www.amazon.co.jp
+0.97s  113828 https://office.com
+0.99s   36544 https://outlook.live.com
+1.05s   49389 https://msn.com
+1.06s  234036 https://www.sohu.com
+1.08s  396010 https://bongacams.com
+1.16s   37602 https://yahoo.co.jp
+1.19s   76376 https://bing.com
+1.21s  105816 https://linkedin.com
+1.23s  140146 https://adobe.com
+1.32s   97071 https://weibo.com
+1.35s  221782 https://www.facebook.com
+1.35s  101663 https://www.huanqiu.com
+1.36s  102842 https://zoom.us
+1.40s   20592 https://www.jd.com
+1.48s   79557 https://www.360.cn
+1.51s   20776 https://www.instagram.com
+1.52s  589042 https://www.yahoo.com
+1.52s    9040 https://www.taobao.com
+1.55s  201133 https://naver.com
+1.56s  306634 https://baidu.com
+1.62s  562932 https://youtube.com
+1.70s  416732 https://www.netflix.com
+1.74s  154934 https://ebay.com
+2.00s  109657 https://okezone.com
+2.03s    7624 https://www.tianya.cn
+2.04s   53206 https://vk.com
+2.05s  403284 https://www.amazon.com
+2.40s  532175 https://sina.com.cn
+2.79s       0 https://csdn.net
+3.41s  151969 https://aparat.com
+3.62s  756178 https://reddit.com
+3.62s elapsed

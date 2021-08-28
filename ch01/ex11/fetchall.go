@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"io"
+	"io/ioutil"
 	"net/http"
 	"os"
 	"time"
@@ -22,6 +23,7 @@ func main() {
 
 func fetch(url string, ch chan<- string, output string) {
 	start := time.Now()
+
 	resp, err := http.Get(url)
 	if err != nil {
 		ch <- fmt.Sprint(err)
@@ -29,19 +31,12 @@ func fetch(url string, ch chan<- string, output string) {
 	}
 	defer resp.Body.Close()
 
-	out, err := os.Create(output)
-	if err != nil {
-		ch <- fmt.Sprintf("while creating file: %v", err)
-		return
-	}
-	defer out.Close()
-
-	nbytes, err := io.Copy(out, resp.Body)
+	nbytes, err := io.Copy(ioutil.Discard, resp.Body)
 	if err != nil {
 		ch <- fmt.Sprintf("while reading %s: %v", url, err)
 		return
 	}
 
 	secs := time.Since(start).Seconds()
-	ch <- fmt.Sprintf("%.2fs %7d %s %s", secs, nbytes, out.Name(), url)
+	ch <- fmt.Sprintf("%.2fs %7d %s", secs, nbytes, url)
 }

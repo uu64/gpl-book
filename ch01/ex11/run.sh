@@ -1,0 +1,54 @@
+#!/bin/bash
+
+# https://www.alexa.com/topsites
+go run ./fetchall.go\
+    https://google.com \
+    https://youtube.com \
+    https://www.tmail.com \
+    https://www.qq.com \
+    https://baidu.com \
+    https://www.sohu.com \
+    https://www.facebook.com \
+    https://www.taobao.com \
+    https://www.360.cn \
+    https://www.jd.com \
+    https://www.amazon.com \
+    https://www.yahoo.com \
+    https://www.wikipedia.org \
+    https://weibo.com \
+    https://sina.com.cn \
+    https://zoom.us \
+    https://www.xinhuanet.com \
+    https://outlook.live.com \
+    https://reddit.com \
+    https://www.netflix.com \
+    https://www.instagram.com \
+    https://www.microsoft.com \
+    https://google.com.hk \
+    https://panda.tv \
+    https://www.zhanqi.tv \
+    https://office.com \
+    https://www.alipay.com \
+    https://bing.com \
+    https://csdn.net \
+    https://myshopify.com \
+    https://vk.com \
+    https://yahoo.co.jp \
+    https://bongacams.com \
+    https://naver.com \
+    https://twitch.tv \
+    https://twitter.com \
+    https://msn.com \
+    https://okezone.com \
+    https://ebay.com \
+    https://www.amazon.in \
+    https://stackoverflow.com \
+    https://adobe.com \
+    https://aparat.com \
+    https://www.aliexpress.com \
+    https://www.yy.com \
+    https://www.huanqiu.com \
+    https://www.tianya.cn \
+    https://chaturbate.com \
+    https://www.amazon.co.jp \
+    https://linkedin.com
