@@ -24,7 +24,7 @@ var palette = []color.Color{
 
 func main() {
 	rand.Seed(time.Now().UTC().UnixNano())
-	lisajous(os.Stdout)
+	lissajous(os.Stdout)
 }
 
 func createPalette(nframes int) []color.Color {
@@ -44,7 +44,7 @@ func fillRect(img *image.Paletted, col color.Color) {
 	}
 }
 
-func lisajous(out io.Writer) {
+func lissajous(out io.Writer) {
 	const (
 		cycles  = 5
 		res     = 0.001

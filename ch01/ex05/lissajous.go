@@ -21,7 +21,7 @@ const (
 
 func main() {
 	rand.Seed(time.Now().UTC().UnixNano())
-	lisajous(os.Stdout)
+	lissajous(os.Stdout)
 }
 
 func fillRect(img *image.Paletted, col color.Color) {
@@ -33,7 +33,7 @@ func fillRect(img *image.Paletted, col color.Color) {
 	}
 }
 
-func lisajous(out io.Writer) {
+func lissajous(out io.Writer) {
 	const (
 		cycles  = 5
 		res     = 0.001
