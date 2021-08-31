@@ -1,6 +1,8 @@
 package tempconv
 
-import "testing"
+import (
+	"testing"
+)
 
 func TestCToF(t *testing.T) {
 	var tests = []struct {
@@ -16,6 +18,20 @@ func TestCToF(t *testing.T) {
 	}
 }
 
+func TestCToK(t *testing.T) {
+	var tests = []struct {
+		input Celsius
+		want  Kelvin
+	}{
+		{AbsoluteZeroC, Kelvin(0)},
+	}
+	for _, test := range tests {
+		if got := CToK(test.input); got != test.want {
+			t.Errorf("CtoK(%v) = %v", test.input, got)
+		}
+	}
+}
+
 func TestFToC(t *testing.T) {
 	var tests = []struct {
 		input Fahrenheit
@@ -26,6 +42,20 @@ func TestFToC(t *testing.T) {
 	for _, test := range tests {
 		if got := FToC(test.input); got != test.want {
 			t.Errorf("FtoC(%v) = %v", test.input, got)
+		}
+	}
+}
+
+func TestFToK(t *testing.T) {
+	var tests = []struct {
+		input Fahrenheit
+		want  Kelvin
+	}{
+		{Fahrenheit(-459.67), AbsoluteZeroK},
+	}
+	for _, test := range tests {
+		if got := FToK(test.input); got != test.want {
+			t.Errorf("FtoK(%v) = %v", test.input, got)
 		}
 	}
 }

@@ -29,3 +29,17 @@ func TestFahrenheitString(t *testing.T) {
 		}
 	}
 }
+
+func TestKelvinString(t *testing.T) {
+	var tests = []struct {
+		input int
+		want  string
+	}{
+		{0, "0°K"},
+	}
+	for _, test := range tests {
+		if got := Kelvin(test.input).String(); got != test.want {
+			t.Errorf("Kelvin(%d).String() = %v", test.input, got)
+		}
+	}
+}
