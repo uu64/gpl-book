@@ -59,3 +59,31 @@ func TestFToK(t *testing.T) {
 		}
 	}
 }
+
+func TestKToC(t *testing.T) {
+	var tests = []struct {
+		input Kelvin
+		want  Celsius
+	}{
+		{FreezingK, FreezingC},
+	}
+	for _, test := range tests {
+		if got := KToC(test.input); got != test.want {
+			t.Errorf("KtoC(%v) = %v", test.input, got)
+		}
+	}
+}
+
+func TestKToF(t *testing.T) {
+	var tests = []struct {
+		input Kelvin
+		want  Fahrenheit
+	}{
+		{BoilingK, Fahrenheit(212)},
+	}
+	for _, test := range tests {
+		if got := KToF(test.input); got != test.want {
+			t.Errorf("KtoF(%v) = %v", test.input, got)
+		}
+	}
+}
