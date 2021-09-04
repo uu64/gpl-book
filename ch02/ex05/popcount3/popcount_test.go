@@ -1,6 +1,7 @@
 package popcount3
 
 import (
+	"math"
 	"testing"
 
 	"github.com/uu64/gpl-book/ch02/ex03/popcount"
@@ -33,7 +34,7 @@ func TestPopCount3(t *testing.T) {
 		want  int
 	}{
 		{0, 0},
-		{18446744073709551615, 64},
+		{math.MaxUint64, 64},
 		{13, 3},
 	}
 	for _, test := range tests {
