@@ -8,19 +8,19 @@ import (
 	"github.com/uu64/gpl-book/ch02/ex04/popcount2"
 )
 
-func BenchmarkPopCountWithUint(b *testing.B) {
+func BenchmarkPopCount(b *testing.B) {
 	for i := 0; i < b.N; i++ {
 		popcount.PopCount(13)
 	}
 }
 
-func BenchmarkPopCount2WithUint(b *testing.B) {
+func BenchmarkPopCount2(b *testing.B) {
 	for i := 0; i < b.N; i++ {
 		popcount2.PopCount2(13)
 	}
 }
 
-func BenchmarkPopCount3WithUint(b *testing.B) {
+func BenchmarkPopCount3(b *testing.B) {
 	for i := 0; i < b.N; i++ {
 		PopCount3(13)
 	}

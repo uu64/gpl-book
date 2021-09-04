@@ -2,14 +2,14 @@ goos: darwin
 goarch: amd64
 pkg: github.com/uu64/gpl-book/ch02/ex05/popcount3
 cpu: Intel(R) Core(TM) i7-1068NG7 CPU @ 2.30GHz
-BenchmarkPopCountWithUint-8       	324390319	         3.706 ns/op
-BenchmarkPopCount2WithUint-8      	49401596	        24.32 ns/op
-BenchmarkPopCount3WithUint-8      	865451306	         1.284 ns/op
-BenchmarkPopCountWithUintMin-8    	213089702	         5.638 ns/op
-BenchmarkPopCount2WithUintMin-8   	47343724	        24.98 ns/op
-BenchmarkPopCount3WithUintMin-8   	1000000000	         0.5629 ns/op
-BenchmarkPopCountWithUintMax-8    	328443570	         3.683 ns/op
-BenchmarkPopCount2WithUintMax-8   	48301827	        24.54 ns/op
-BenchmarkPopCount3WithUintMax-8   	28531798	        42.19 ns/op
+BenchmarkPopCount-8               	325291689	         3.692 ns/op
+BenchmarkPopCount2-8              	47288740	        24.39 ns/op
+BenchmarkPopCount3-8              	926391308	         1.259 ns/op
+BenchmarkPopCountWithUintMin-8    	211928323	         5.663 ns/op
+BenchmarkPopCount2WithUintMin-8   	47710736	        24.90 ns/op
+BenchmarkPopCount3WithUintMin-8   	1000000000	         0.5632 ns/op
+BenchmarkPopCountWithUintMax-8    	325442281	         3.685 ns/op
+BenchmarkPopCount2WithUintMax-8   	47881045	        24.40 ns/op
+BenchmarkPopCount3WithUintMax-8   	28521211	        42.21 ns/op
 PASS
-ok  	github.com/uu64/gpl-book/ch02/ex05/popcount3	11.808s
+ok  	github.com/uu64/gpl-book/ch02/ex05/popcount3	11.792s
