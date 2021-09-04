@@ -1,4 +1,4 @@
-module github.com/uu64/gpl-book/ch02/ex02/cf
+module github.com/uu64/gpl-book/ch02/ex02/cu
 
 go 1.15
 
