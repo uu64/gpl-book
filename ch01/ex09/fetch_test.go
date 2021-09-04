@@ -14,7 +14,7 @@ func TestGet(t *testing.T) {
 		err := get(test.input)
 
 		if err != nil {
-			t.Errorf("get(%q) %v", test.input, err)
+			t.Errorf("get(%q) %w", test.input, err)
 		}
 	}
 }

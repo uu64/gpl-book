@@ -20,13 +20,13 @@ func get(url string) error {
 
 	resp, err := http.Get(url)
 	if err != nil {
-		return fmt.Errorf("%v", err)
+		return fmt.Errorf("%w", err)
 	}
 
 	_, err = io.Copy(stdout, resp.Body)
 	resp.Body.Close()
 	if err != nil {
-		return fmt.Errorf("copying %s: %v", url, err)
+		return fmt.Errorf("copying %s: %w", url, err)
 	}
 
 	return nil
@@ -36,7 +36,7 @@ func main() {
 	for _, url := range os.Args[1:] {
 		err := get(url)
 		if err != nil {
-			fmt.Fprintf(stderr, "fetch: %v\n", err)
+			fmt.Fprintf(stderr, "fetch: %w\n", err)
 			os.Exit(1)
 		}
 	}

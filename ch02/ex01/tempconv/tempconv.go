@@ -2,8 +2,13 @@ package tempconv
 
 import "fmt"
 
+// Celsius unit
 type Celsius float64
+
+// Fahrenheit unit
 type Fahrenheit float64
+
+// Kelvin unit
 type Kelvin float64
 
 const (

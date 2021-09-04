@@ -20,7 +20,7 @@ func get(url string) error {
 
 	resp, err := http.Get(url)
 	if err != nil {
-		return fmt.Errorf("%v", err)
+		return fmt.Errorf("%w", err)
 	}
 
 	fmt.Fprintf(stdout, "response status code: %d\n", resp.StatusCode)
@@ -38,7 +38,7 @@ func main() {
 	for _, url := range os.Args[1:] {
 		err := get(url)
 		if err != nil {
-			fmt.Fprintf(stderr, "fetch: %v\n", err)
+			fmt.Fprintf(stderr, "fetch: %w\n", err)
 			os.Exit(1)
 		}
 	}
