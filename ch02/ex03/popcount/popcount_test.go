@@ -8,7 +8,7 @@ func TestPopCount(t *testing.T) {
 		want  int
 	}{
 		{0, 0},
-		{255, 8},
+		{18446744073709551615, 64},
 		{13, 3},
 	}
 	for _, test := range tests {
