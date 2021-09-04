@@ -1,0 +1,8 @@
+goos: darwin
+goarch: amd64
+pkg: github.com/uu64/gpl-book/ch02/ex04/popcount2
+cpu: Intel(R) Core(TM) i7-1068NG7 CPU @ 2.30GHz
+BenchmarkPopCount-8    	323397042	         3.705 ns/op
+BenchmarkPopCount2-8   	46958227	        24.75 ns/op
+PASS
+ok  	github.com/uu64/gpl-book/ch02/ex04/popcount2	2.868s
