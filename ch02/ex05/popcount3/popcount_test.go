@@ -8,23 +8,57 @@ import (
 	"github.com/uu64/gpl-book/ch02/ex04/popcount2"
 )
 
-var input = uint64(13)
-
-func BenchmarkPopCount(b *testing.B) {
+func BenchmarkPopCountWithUint(b *testing.B) {
 	for i := 0; i < b.N; i++ {
-		popcount.PopCount(input)
+		popcount.PopCount(13)
 	}
 }
 
-func BenchmarkPopCount2(b *testing.B) {
+func BenchmarkPopCount2WithUint(b *testing.B) {
 	for i := 0; i < b.N; i++ {
-		popcount2.PopCount2(input)
+		popcount2.PopCount2(13)
 	}
 }
 
-func BenchmarkPopCount3(b *testing.B) {
+func BenchmarkPopCount3WithUint(b *testing.B) {
 	for i := 0; i < b.N; i++ {
-		PopCount3(input)
+		PopCount3(13)
+	}
+}
+
+func BenchmarkPopCountWithUintMin(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		popcount.PopCount(0)
+	}
+}
+
+func BenchmarkPopCount2WithUintMin(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		popcount2.PopCount2(0)
+	}
+}
+
+func BenchmarkPopCount3WithUintMin(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		PopCount3(0)
+	}
+}
+
+func BenchmarkPopCountWithUintMax(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		popcount.PopCount(math.MaxUint64)
+	}
+}
+
+func BenchmarkPopCount2WithUintMax(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		popcount2.PopCount2(math.MaxUint64)
+	}
+}
+
+func BenchmarkPopCount3WithUintMax(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		PopCount3(math.MaxUint64)
 	}
 }
 
