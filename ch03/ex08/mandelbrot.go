@@ -9,6 +9,7 @@ import (
 	"os"
 
 	"github.com/uu64/gpl-book/ch03/ex08/cmplxBigFloat"
+	"github.com/uu64/gpl-book/ch03/ex08/cmplxBigRat"
 )
 
 func main() {
@@ -34,8 +35,9 @@ func main() {
 			case "2":
 				z := complex(x, y)
 				img.Set(px, py, mandelbrotBigFloat(cmplxBigFloat.New(z)))
-				// case "3":
-				// 	img.Set(px, py, mandelbrot(z))
+			case "3":
+				z := complex(x, y)
+				img.Set(px, py, mandelbrotBigRat(cmplxBigRat.New(z)))
 			}
 		}
 	}
@@ -78,6 +80,21 @@ func mandelbrotBigFloat(z *cmplxBigFloat.Cmplx) color.Color {
 	for n := uint8(0); n < iterations; n++ {
 		v = cmplxBigFloat.Add(cmplxBigFloat.Mul(v, v), z)
 		if cmplxBigFloat.Abs(v).Cmp(big.NewFloat(2)) == 1 {
+			return color.YCbCr{contrast * n, 255 - contrast*n, contrast * n}
+		}
+	}
+	return color.Black
+}
+
+func mandelbrotBigRat(z *cmplxBigRat.Cmplx) color.Color {
+	const iterations = 200
+	const contrast = 15
+
+	v := cmplxBigRat.New(complex(0, 0))
+	for n := uint8(0); n < iterations; n++ {
+		v = cmplxBigRat.Add(cmplxBigRat.Mul(v, v), z)
+		// SqAbs returns abs*abs
+		if cmplxBigRat.SqAbs(v).Cmp(new(big.Rat).SetFloat64(4)) == 1 {
 			return color.YCbCr{contrast * n, 255 - contrast*n, contrast * n}
 		}
 	}
