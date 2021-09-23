@@ -18,7 +18,7 @@ const (
 
 var sin30, cos30 = math.Sin(angle), math.Cos(angle)
 
-type SvgParams struct {
+type svgParams struct {
 	width  int
 	height int
 	color  string
@@ -39,13 +39,13 @@ func main() {
 	log.Fatal(http.ListenAndServe("localhost:8000", nil))
 }
 
-func parseQuery(url *url.URL) (SvgParams, error) {
+func parseQuery(url *url.URL) (svgParams, error) {
 	defaultWidth := 600
 	defaultHeight := 320
 	defaultColor := "white"
 	q := url.Query()
 	if q == nil {
-		return SvgParams{
+		return svgParams{
 			width:  defaultWidth,
 			height: defaultHeight,
 			color:  defaultColor,
@@ -67,14 +67,14 @@ func parseQuery(url *url.URL) (SvgParams, error) {
 		color = defaultColor
 	}
 
-	return SvgParams{
+	return svgParams{
 		width:  width,
 		height: height,
 		color:  color,
 	}, nil
 }
 
-func draw(out io.Writer, params SvgParams) {
+func draw(out io.Writer, params svgParams) {
 	fmt.Fprintf(out, "<svg xmlns='http://www.w3.org/2000/svg' "+
 		"style='stroke: grey; fill: white; stroke-width: 0.7' "+
 		"width='%d' height='%d'>", params.width, params.height)
@@ -95,7 +95,7 @@ func draw(out io.Writer, params SvgParams) {
 	fmt.Fprintf(out, "</svg>")
 }
 
-func corner(i, j int, params SvgParams) (float64, float64, error) {
+func corner(i, j int, params svgParams) (float64, float64, error) {
 	xyscale := float64(params.width) / 2 / xyrange
 	zscale := float64(params.height) * 0.4
 	x := xyrange * (float64(i)/cells - 0.5)

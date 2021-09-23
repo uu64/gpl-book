@@ -18,13 +18,13 @@ func createURL(rawURL string) *url.URL {
 func TestParseQuery(t *testing.T) {
 	var tests = []struct {
 		input *url.URL
-		want  svgParams
+		want  imgParam
 	}{
-		{createURL("http://localhost"), svgParams{600, 320, "white"}},
-		{createURL("http://localhost?width=500"), svgParams{500, 320, "white"}},
-		{createURL("http://localhost?height=300"), svgParams{600, 300, "white"}},
-		{createURL("http://localhost?color=red"), svgParams{600, 320, "red"}},
-		{createURL("http://localhost?color=%23ff0000ff"), svgParams{600, 320, "#ff0000ff"}},
+		{createURL("http://localhost"), imgParam{-2.0, -2.0, 1}},
+		{createURL("http://localhost?x=0.5"), imgParam{0.5, -2.0, 1}},
+		{createURL("http://localhost?y=0.5"), imgParam{-2.0, 0.5, 1}},
+		{createURL("http://localhost?zoom=100"), imgParam{-2.0, -2.0, 100}},
+		{createURL("http://localhost?x=-1&y=-0.5&zoom=100"), imgParam{-1.0, -0.5, 100}},
 	}
 	for _, test := range tests {
 		got, err := parseQuery(test.input)
