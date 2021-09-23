@@ -33,10 +33,5 @@ func comma(s string) string {
 }
 
 func toString(intg, frac, sign, dot []byte) string {
-	var buf bytes.Buffer
-	buf.Write(sign)
-	buf.Write(intg)
-	buf.Write(dot)
-	buf.Write(frac)
-	return buf.String()
+	return string(bytes.Join([][]byte{sign, intg, dot, frac}, []byte{}))
 }
