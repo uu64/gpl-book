@@ -16,7 +16,7 @@ const (
 	// xmin, ymin, xmax, ymax = -0.75100, 0.05100, -0.74600, 0.05600
 	// xmin, ymin, xmax, ymax = -0.74996733, 0.05294105, -0.74995971, 0.05294867
 	xmin, ymin, xmax, ymax = -0.749966940, 0.052945120, -0.749965420, 0.052946640
-	width, height          = 512, 512
+	width, height          = 1024, 1024
 )
 
 func main() {
@@ -29,24 +29,23 @@ func main() {
 			switch opt {
 			case "0":
 				z := complex64(complex(x, y))
-				img.Set(px, py, mandelbrotCmplx64(z))
+				img.Set(px, py, mandelbrotCmplx64(z, 255))
 			case "1":
 				z := complex(x, y)
-				img.Set(px, py, mandelbrotCmplx128(z))
+				img.Set(px, py, mandelbrotCmplx128(z, 255))
 			case "2":
 				z := complex(x, y)
-				img.Set(px, py, mandelbrotBigFloat(cmplxbigfloat.New(z)))
+				img.Set(px, py, mandelbrotBigFloat(cmplxbigfloat.New(z), 255))
 			case "3":
 				z := complex(x, y)
-				img.Set(px, py, mandelbrotBigRat(cmplxbigrat.New(z)))
+				img.Set(px, py, mandelbrotBigRat(cmplxbigrat.New(z), 10))
 			}
 		}
 	}
 	png.Encode(os.Stdout, img)
 }
 
-func mandelbrotCmplx64(z complex64) color.Color {
-	const iterations = 255
+func mandelbrotCmplx64(z complex64, iterations uint8) color.Color {
 	const contrast = 5
 
 	var v complex64
@@ -59,8 +58,7 @@ func mandelbrotCmplx64(z complex64) color.Color {
 	return color.Black
 }
 
-func mandelbrotCmplx128(z complex128) color.Color {
-	const iterations = 255
+func mandelbrotCmplx128(z complex128, iterations uint8) color.Color {
 	const contrast = 5
 
 	var v complex128
@@ -73,8 +71,7 @@ func mandelbrotCmplx128(z complex128) color.Color {
 	return color.Black
 }
 
-func mandelbrotBigFloat(z *cmplxbigfloat.Cmplx) color.Color {
-	const iterations = 255
+func mandelbrotBigFloat(z *cmplxbigfloat.Cmplx, iterations uint8) color.Color {
 	const contrast = 5
 
 	v := cmplxbigfloat.New(complex(0, 0))
@@ -87,8 +84,7 @@ func mandelbrotBigFloat(z *cmplxbigfloat.Cmplx) color.Color {
 	return color.Black
 }
 
-func mandelbrotBigRat(z *cmplxbigrat.Cmplx) color.Color {
-	const iterations = 10
+func mandelbrotBigRat(z *cmplxbigrat.Cmplx, iterations uint8) color.Color {
 	const contrast = 5
 
 	v := cmplxbigrat.New(complex(0, 0))

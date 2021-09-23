@@ -16,7 +16,7 @@ func TestNew(t *testing.T) {
 	for _, test := range tests {
 		got := New(test.input)
 		if got.real.Cmp(test.expected.real) != 0 || got.imag.Cmp(test.expected.imag) != 0 {
-			t.Errorf("Newcmplxbigrat(%v) = %v\n", test.input, toString(got))
+			t.Errorf("New(%v) = %v\n", test.input, toString(got))
 		}
 	}
 }

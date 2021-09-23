@@ -1,0 +1,10 @@
+goos: darwin
+goarch: amd64
+pkg: github.com/uu64/gpl-book/ch03/ex08
+cpu: Intel(R) Core(TM) i7-1068NG7 CPU @ 2.30GHz
+BenchmarkMandelbrotCmplx64-8    	11199253	        96.44 ns/op	       0 B/op	       0 allocs/op
+BenchmarkMandelbrotCmplx128-8   	21273862	        54.93 ns/op	       0 B/op	       0 allocs/op
+BenchmarkMandelbrotBigFloat-8   	   47232	     25285 ns/op	   20512 B/op	     292 allocs/op
+BenchmarkMandelbrotBigRat-8     	      31	  37463188 ns/op	 1689894 B/op	    1189 allocs/op
+PASS
+ok  	github.com/uu64/gpl-book/ch03/ex08	5.306s
