@@ -21,6 +21,8 @@ func main() {
 		os.Exit(1)
 	}
 
+	fmt.Printf("algorithm: SHA-%d\n", opt)
+
 	var input string
 	for {
 		fmt.Scan(&input)
