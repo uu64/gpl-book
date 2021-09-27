@@ -13,14 +13,13 @@ func rmspaces(s []byte) []byte {
 		r, size := utf8.DecodeRune(s[i:])
 		if !unicode.IsSpace(r) {
 			copy(s[pos:], s[i:i+size])
-			prev = r
 			pos += size
 		} else if unicode.IsSpace(r) && !unicode.IsSpace(prev) {
 			asciiSpace := []byte(" ")
 			copy(s[pos:], asciiSpace)
-			prev = r
 			pos += len(asciiSpace)
 		}
+		prev = r
 		i += size
 	}
 	return s[:pos]
