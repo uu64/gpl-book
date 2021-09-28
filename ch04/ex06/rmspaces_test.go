@@ -30,10 +30,9 @@ func TestRmdups(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		got := rmspaces(test.input)
-		fmt.Printf("***%v***\n", string(test.result))
-		fmt.Printf("***%v***\n", string(got))
 		tmp := make([]byte, len(test.input))
+		copy(tmp, test.input)
+		got := rmspaces(test.input)
 		if !equal(got, test.result) {
 			t.Errorf("rmspaces(%v) = %v\n", string(tmp), string(got))
 		}
