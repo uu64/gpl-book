@@ -36,7 +36,7 @@ func main() {
 	for _, url := range os.Args[1:] {
 		err := get(url)
 		if err != nil {
-			fmt.Fprintf(stderr, "fetch: %w\n", err)
+			fmt.Fprintf(stderr, "fetch: %v\n", err)
 			os.Exit(1)
 		}
 	}
