@@ -82,7 +82,14 @@ func (cmd *Cmd) create() {}
 
 func (cmd *Cmd) edit() {}
 
-func (cmd *Cmd) close() {}
+func (cmd *Cmd) close(number string) error {
+	result, err := issue.Close(cmd.owner, cmd.repo, number)
+	if err != nil {
+		return err
+	}
+	fmt.Printf("#%d is closed.\n", result.Number)
+	return nil
+}
 
 func newCmd() (*Cmd, error) {
 	var owner, repo string
@@ -144,7 +151,12 @@ func Run(args []string) error {
 	case "edit":
 		fmt.Println(command)
 	case "close":
-		fmt.Println(command)
+		if len(args) < 2 {
+			return fmt.Errorf("close: issue number is required")
+		}
+		if err := cmd.close(args[1]); err != nil {
+			return fmt.Errorf("close: %w", err)
+		}
 	case "search":
 		if len(args) < 2 {
 			return fmt.Errorf("search: terms are required")
