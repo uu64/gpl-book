@@ -4,13 +4,12 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
-	"strings"
 )
 
 // Show shows the detail of the specified issue
 func Show(owner, repo, number string) (*Issue, error) {
-	resp, err := http.Get(strings.Join([]string{
-		baseURL, "repos", owner, repo, "issues", number}, "/"))
+	url := fmt.Sprintf("%s/repos/%s/%s/issues/%s", baseURL, owner, repo, number)
+	resp, err := http.Get(url)
 	if err != nil {
 		return nil, err
 	}

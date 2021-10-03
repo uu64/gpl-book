@@ -24,11 +24,16 @@ const usage = "The simple cli tool to manage gh issues.\n\n" +
 	"  Search for issues from github.\n" +
 	"  $ issues search [...terms]\n\n"
 
-func help() {
+type Cmd struct {
+	owner string
+	repo  string
+}
+
+func (cmd *Cmd) help() {
 	fmt.Println(usage)
 }
 
-func search(terms []string) error {
+func (cmd *Cmd) search(terms []string) error {
 	result, err := github.SearchIssues(terms)
 	if err != nil {
 		return err
@@ -43,8 +48,8 @@ func search(terms []string) error {
 	return nil
 }
 
-func list(owner, repo, state string) error {
-	result, err := issue.List(owner, repo, state)
+func (cmd *Cmd) list(state string) error {
+	result, err := issue.List(cmd.owner, cmd.repo, state)
 	if err != nil {
 		return err
 	}
@@ -58,82 +63,32 @@ func list(owner, repo, state string) error {
 	return nil
 }
 
-func show(owner, repo, number string) error {
-	result, err := issue.Show(owner, repo, number)
+func (cmd *Cmd) show(number string) error {
+	result, err := issue.Show(cmd.owner, cmd.repo, number)
 	if err != nil {
 		return err
 	}
 
 	dateFmt := "2006-01-02 15:04:05 MST"
 	fmt.Printf("%s #%d\n", result.Title, result.Number)
-	fmt.Printf("%s (%s opened at %s)\n",
+	fmt.Printf("state: %s (%s opened at %s)\n\n",
 		result.State, result.User.Login, result.CreatedAt.Format(dateFmt))
 	fmt.Printf("%s\n", result.Body)
 
 	return nil
 }
 
-func create() {}
+func (cmd *Cmd) create() {}
 
-func edit() {}
+func (cmd *Cmd) edit() {}
 
-func close() {}
+func (cmd *Cmd) close() {}
 
-// Run executes this command
-func Run(args []string) error {
-	if len(args) < 1 {
-		help()
-		return fmt.Errorf("check the usage")
-	}
-
-	owner, repo, err := getRepoInfo()
-	if err != nil {
-		return fmt.Errorf("%w", err)
-	}
-
-	command := args[0]
-	switch command {
-	case "list":
-		state := "open"
-		if len(args) == 2 {
-			state = args[1]
-		}
-		if err := list(owner, repo, state); err != nil {
-			return fmt.Errorf("list: %w", err)
-		}
-	case "show":
-		if len(args) < 2 {
-			return fmt.Errorf("show: issue number is required")
-		}
-		if err := show(owner, repo, args[1]); err != nil {
-			return fmt.Errorf("show: %w", err)
-		}
-	case "create":
-		fmt.Println(command)
-	case "edit":
-		fmt.Println(command)
-	case "close":
-		fmt.Println(command)
-	case "search":
-		if len(args) < 2 {
-			return fmt.Errorf("search: terms are required")
-		}
-		if err := search(args[1:]); err != nil {
-			return fmt.Errorf("search: %w", err)
-		}
-	default:
-		help()
-		return fmt.Errorf("invalid command: %s", command)
-	}
-
-	return nil
-}
-
-func getRepoInfo() (string, string, error) {
+func newCmd() (*Cmd, error) {
 	var owner, repo string
 	out, err := exec.Command("git", "config", "--get", "remote.origin.url").Output()
 	if err != nil {
-		return owner, repo, fmt.Errorf("get git config failed: %w", err)
+		return nil, fmt.Errorf("get git config failed: %w", err)
 	}
 
 	// remove \n
@@ -149,7 +104,58 @@ func getRepoInfo() (string, string, error) {
 		owner = tmp[0]
 		repo = tmp[1]
 	default:
-		return owner, repo, fmt.Errorf("unexpected url format: %s", url)
+		return nil, fmt.Errorf("unexpected url format: %s", url)
 	}
-	return owner, repo, nil
+
+	return &Cmd{owner, repo}, nil
+}
+
+// Run executes this command
+func Run(args []string) error {
+	cmd, err := newCmd()
+	if err != nil {
+		return fmt.Errorf("%w", err)
+	}
+
+	if len(args) < 1 {
+		cmd.help()
+		return fmt.Errorf("check the usage")
+	}
+
+	command := args[0]
+	switch command {
+	case "list":
+		state := "open"
+		if len(args) == 2 {
+			state = args[1]
+		}
+		if err := cmd.list(state); err != nil {
+			return fmt.Errorf("list: %w", err)
+		}
+	case "show":
+		if len(args) < 2 {
+			return fmt.Errorf("show: issue number is required")
+		}
+		if err := cmd.show(args[1]); err != nil {
+			return fmt.Errorf("show: %w", err)
+		}
+	case "create":
+		fmt.Println(command)
+	case "edit":
+		fmt.Println(command)
+	case "close":
+		fmt.Println(command)
+	case "search":
+		if len(args) < 2 {
+			return fmt.Errorf("search: terms are required")
+		}
+		if err := cmd.search(args[1:]); err != nil {
+			return fmt.Errorf("search: %w", err)
+		}
+	default:
+		cmd.help()
+		return fmt.Errorf("invalid command: %s", command)
+	}
+
+	return nil
 }
