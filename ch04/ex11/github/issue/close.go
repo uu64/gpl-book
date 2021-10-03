@@ -2,9 +2,13 @@ package issue
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"os"
+
+	"golang.org/x/oauth2"
 )
 
 // Close closes an issue
@@ -22,7 +26,8 @@ func Close(owner, repo, number string) (*Issue, error) {
 		return nil, err
 	}
 
-	client := &http.Client{}
+	client := oauth2.NewClient(context.Background(),
+		oauth2.StaticTokenSource(&oauth2.Token{AccessToken: os.Getenv("GH_ACCESS_TOKEN")}))
 	resp, err := client.Do(req)
 	if resp.StatusCode != http.StatusOK {
 		resp.Body.Close()
