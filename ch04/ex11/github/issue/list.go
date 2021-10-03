@@ -4,12 +4,13 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
-	"strings"
+	"net/url"
 )
 
 // List gets the list of issues from the specified repository
-func List(owner, repo string) (*[]Issue, error) {
-	resp, err := http.Get(strings.Join([]string{baseURL, "repos", owner, repo, "issues"}, "/"))
+func List(owner, repo, state string) (*[]Issue, error) {
+	url := fmt.Sprintf("%s/repos/%s/%s/issues?state=%s", baseURL, owner, repo, url.QueryEscape(state))
+	resp, err := http.Get(url)
 	if err != nil {
 		return nil, err
 	}
@@ -25,5 +26,4 @@ func List(owner, repo string) (*[]Issue, error) {
 	}
 	resp.Body.Close()
 	return &result, nil
-
 }

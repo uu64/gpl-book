@@ -9,6 +9,25 @@ import (
 	"gopl.io/ch4/github"
 )
 
+const usage = "The simple cli tool to manage gh issues.\n\n" +
+	"USAGE\n" +
+	"  List issues in this repository. State is either open or closed. Default is open.\n" +
+	"  $ issues list [state]\n\n" +
+	"  Show the detail of the specified issue.\n" +
+	"  $ issues show <issue_number>\n\n" +
+	"  Create a new issue.\n" +
+	"  $ issues create\n\n" +
+	"  Edit an issue.\n" +
+	"  $ issues edit <issue_number>\n\n" +
+	"  Close an issue.\n" +
+	"  $ issues close <issue_number>\n\n" +
+	"  Search for issues from github.\n" +
+	"  $ issues search [...terms]\n\n"
+
+func help() {
+	fmt.Println(usage)
+}
+
 func search(terms []string) error {
 	result, err := github.SearchIssues(terms)
 	if err != nil {
@@ -24,8 +43,8 @@ func search(terms []string) error {
 	return nil
 }
 
-func list(owner, repo string) error {
-	result, err := issue.List(owner, repo)
+func list(owner, repo, state string) error {
+	result, err := issue.List(owner, repo, state)
 	if err != nil {
 		return err
 	}
@@ -39,7 +58,20 @@ func list(owner, repo string) error {
 	return nil
 }
 
-func show() {}
+func show(owner, repo, number string) error {
+	result, err := issue.Show(owner, repo, number)
+	if err != nil {
+		return err
+	}
+
+	dateFmt := "2006-01-02 15:04:05 MST"
+	fmt.Printf("%s #%d\n", result.Title, result.Number)
+	fmt.Printf("%s (%s opened at %s)\n",
+		result.State, result.User.Login, result.CreatedAt.Format(dateFmt))
+	fmt.Printf("%s\n", result.Body)
+
+	return nil
+}
 
 func create() {}
 
@@ -50,7 +82,8 @@ func close() {}
 // Run executes this command
 func Run(args []string) error {
 	if len(args) < 1 {
-		return fmt.Errorf("command is required")
+		help()
+		return fmt.Errorf("check the usage")
 	}
 
 	owner, repo, err := getRepoInfo()
@@ -60,6 +93,27 @@ func Run(args []string) error {
 
 	command := args[0]
 	switch command {
+	case "list":
+		state := "open"
+		if len(args) == 2 {
+			state = args[1]
+		}
+		if err := list(owner, repo, state); err != nil {
+			return fmt.Errorf("list: %w", err)
+		}
+	case "show":
+		if len(args) < 2 {
+			return fmt.Errorf("show: issue number is required")
+		}
+		if err := show(owner, repo, args[1]); err != nil {
+			return fmt.Errorf("show: %w", err)
+		}
+	case "create":
+		fmt.Println(command)
+	case "edit":
+		fmt.Println(command)
+	case "close":
+		fmt.Println(command)
 	case "search":
 		if len(args) < 2 {
 			return fmt.Errorf("search: terms are required")
@@ -67,19 +121,8 @@ func Run(args []string) error {
 		if err := search(args[1:]); err != nil {
 			return fmt.Errorf("search: %w", err)
 		}
-	case "list":
-		if err := list(owner, repo); err != nil {
-			return fmt.Errorf("list: %w", err)
-		}
-	case "create":
-		fmt.Println(command)
-	case "show":
-		fmt.Println(command)
-	case "edit":
-		fmt.Println(command)
-	case "close":
-		fmt.Println(command)
 	default:
+		help()
 		return fmt.Errorf("invalid command: %s", command)
 	}
 
@@ -90,7 +133,7 @@ func getRepoInfo() (string, string, error) {
 	var owner, repo string
 	out, err := exec.Command("git", "config", "--get", "remote.origin.url").Output()
 	if err != nil {
-		return owner, repo, err
+		return owner, repo, fmt.Errorf("get git config failed: %w", err)
 	}
 
 	// remove \n
