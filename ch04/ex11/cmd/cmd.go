@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+	"os"
 	"os/exec"
 	"strings"
 
@@ -148,6 +149,13 @@ func Run(args []string) error {
 		}
 	case "create":
 		fmt.Println(command)
+		cmd := os.Getenv("GH_EDITOR")
+		c := exec.Command(cmd, "test.txt")
+		c.Stdin = os.Stdin
+		c.Stdout = os.Stdout
+		c.Stderr = os.Stderr
+		err := c.Run()
+		fmt.Println(err)
 	case "edit":
 		fmt.Println(command)
 	case "close":
