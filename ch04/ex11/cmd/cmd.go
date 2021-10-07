@@ -29,6 +29,7 @@ const usage = "The simple cli tool to manage gh issues.\n\n" +
 	"  EDITOR: Set the command name to use for authoring text. Default is \"vim\".\n" +
 	"  GH_ACCESS_TOKEN: Set the github personal access token.\n\n"
 
+// Cmd is issues command
 type Cmd struct {
 	owner string
 	repo  string
@@ -91,31 +92,28 @@ func (cmd *Cmd) show(number string) error {
 }
 
 func (cmd *Cmd) create() error {
-	var title, body string
+	var title, body []byte
 	var err error
 
 	fmt.Printf("Title: ")
 	in := bufio.NewScanner(os.Stdin)
 	if in.Scan() {
-		title = in.Text()
+		title = in.Bytes()
 	}
 
-	fmt.Printf("Body: ")
-	editor, filename, err := newEditor()
+	fmt.Printf("Body: (please press ENTER to launch editor)")
+	if in.Scan() {
+		body, err = edit()
+	}
 	if err != nil {
 		return err
 	}
 
-	err = editor.Run()
+	result, err := issue.Create(cmd.owner, cmd.repo, title, body)
 	if err != nil {
 		return err
 	}
-
-	b, err := os.ReadFile(filename)
-	body = string(b)
-
-	fmt.Println(title)
-	fmt.Println(body)
+	fmt.Printf("#%d is opened.\n", result.Number)
 	return nil
 }
 

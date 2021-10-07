@@ -6,7 +6,7 @@ import (
 	"os/exec"
 )
 
-func newEditor() (cmd *exec.Cmd, filename string, err error) {
+func edit() ([]byte, error) {
 	name := "vim"
 	if e := os.Getenv("EDITOR"); e != "" {
 		name = e
@@ -15,14 +15,25 @@ func newEditor() (cmd *exec.Cmd, filename string, err error) {
 	f, err := os.CreateTemp("", "issues.body.*.md")
 	defer closeFile(f)
 	if err != nil {
-		return nil, "", fmt.Errorf("failed to make temp file: %w", err)
+		return nil, fmt.Errorf("failed to make temp file: %w", err)
 	}
 
 	editor := exec.Command(name, f.Name())
 	editor.Stdin = os.Stdin
 	editor.Stdout = os.Stdout
 	editor.Stderr = os.Stderr
-	return editor, f.Name(), nil
+
+	err = editor.Run()
+	if err != nil {
+		return nil, fmt.Errorf("failed to edit: %w", err)
+	}
+
+	b, err := os.ReadFile(f.Name())
+	if err != nil {
+		return nil, fmt.Errorf("failed to read file: %w", err)
+	}
+
+	return b, nil
 }
 
 func closeFile(f *os.File) {

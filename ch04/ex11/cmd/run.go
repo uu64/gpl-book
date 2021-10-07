@@ -31,7 +31,9 @@ func Run(args []string) error {
 			return fmt.Errorf("show: %w", err)
 		}
 	case "create":
-		cmd.create()
+		if err := cmd.create(); err != nil {
+			return fmt.Errorf("create: %w", err)
+		}
 	case "edit":
 	case "close":
 		if len(args) < 2 {
