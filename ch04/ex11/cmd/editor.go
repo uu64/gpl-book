@@ -6,7 +6,7 @@ import (
 	"os/exec"
 )
 
-func edit() ([]byte, error) {
+func edit(content *string) ([]byte, error) {
 	name := "vim"
 	if e := os.Getenv("EDITOR"); e != "" {
 		name = e
@@ -16,6 +16,13 @@ func edit() ([]byte, error) {
 	defer closeFile(f)
 	if err != nil {
 		return nil, fmt.Errorf("failed to make temp file: %w", err)
+	}
+
+	if content != nil {
+		_, err = f.WriteString(*content)
+		if err != nil {
+			return nil, fmt.Errorf("failed to write to temp file: %w", err)
+		}
 	}
 
 	editor := exec.Command(name, f.Name())

@@ -35,6 +35,12 @@ func Run(args []string) error {
 			return fmt.Errorf("create: %w", err)
 		}
 	case "edit":
+		if len(args) < 2 {
+			return fmt.Errorf("edit: issue number is required")
+		}
+		if err := cmd.edit(args[1]); err != nil {
+			return fmt.Errorf("edit: %w", err)
+		}
 	case "close":
 		if len(args) < 2 {
 			return fmt.Errorf("close: issue number is required")

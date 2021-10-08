@@ -103,7 +103,7 @@ func (cmd *Cmd) create() error {
 
 	fmt.Printf("Body: (please press ENTER to launch editor)")
 	if in.Scan() {
-		body, err = edit()
+		body, err = edit(nil)
 	}
 	if err != nil {
 		return err
@@ -117,7 +117,37 @@ func (cmd *Cmd) create() error {
 	return nil
 }
 
-func (cmd *Cmd) edit() error {
+func (cmd *Cmd) edit(number string) error {
+	var title, body []byte
+	var err error
+
+	current, err := issue.Show(cmd.owner, cmd.repo, number)
+	if err != nil {
+		return err
+	}
+
+	fmt.Printf("Title (%s): ", current.Title)
+	in := bufio.NewScanner(os.Stdin)
+	if in.Scan() {
+		title = in.Bytes()
+	}
+	if len(title) == 0 {
+		title = []byte(current.Title)
+	}
+
+	fmt.Printf("Body: (please press ENTER to launch editor)")
+	if in.Scan() {
+		body, err = edit(&current.Body)
+	}
+	if err != nil {
+		return err
+	}
+
+	result, err := issue.Update(cmd.owner, cmd.repo, fmt.Sprintf("%d", current.Number), title, body)
+	if err != nil {
+		return err
+	}
+	fmt.Printf("#%d is updated.\n", result.Number)
 	return nil
 }
 
