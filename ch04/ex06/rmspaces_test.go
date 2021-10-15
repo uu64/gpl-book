@@ -27,6 +27,8 @@ func TestRmdups(t *testing.T) {
 		{[]byte("Hello, World!"), []byte("Hello, World!")},
 		{[]byte("Hello,　 \tWorld!"), []byte("Hello, World!")},
 		{[]byte(" Hello,,World! "), []byte(" Hello,,World! ")},
+		{[]byte(" Hello,       ,World! "), []byte(" Hello, ,World! ")},
+		{[]byte(" Hello,  	     　,World! "), []byte(" Hello, ,World! ")},
 	}
 
 	for _, test := range tests {
