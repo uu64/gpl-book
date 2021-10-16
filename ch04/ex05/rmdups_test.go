@@ -24,7 +24,7 @@ func TestRmdups(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		if got := rmdups(test.input); !equal(got, test.result) {
+		if got := rmdups(test.input); !equal(test.input[:len(got)], test.result) {
 			t.Errorf("rmdups(%v) = %v\n", test.input, got)
 		}
 	}

@@ -35,7 +35,7 @@ func TestRmdups(t *testing.T) {
 		tmp := make([]byte, len(test.input))
 		copy(tmp, test.input)
 		got := rmspaces(test.input)
-		if !equal(got, test.result) {
+		if !equal(test.input[:len(got)], test.result) {
 			t.Errorf("rmspaces(%v) = %v\n", string(tmp), string(got))
 		}
 	}
