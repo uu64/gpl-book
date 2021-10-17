@@ -1,7 +1,9 @@
 package main
 
 import (
+	"bytes"
 	"fmt"
+	"io"
 	"net/http"
 	"os"
 
@@ -46,17 +48,38 @@ func forEachNode(n *html.Node, pre, post func(n *html.Node)) {
 }
 
 var depth int
+var out io.Writer = os.Stdout
 
 func startElement(n *html.Node) {
 	if n.Type == html.ElementNode {
-		fmt.Printf("%*s<%s>\n", depth*2, "", n.Data)
+		attrs := [][]byte{[]byte("")}
+		for _, a := range n.Attr {
+			b := []byte(fmt.Sprintf("%s=\"%s\"", a.Key, a.Val))
+			attrs = append(attrs, b)
+		}
+		if n.FirstChild != nil {
+			fmt.Fprintf(out, "%*s<%s%s>\n", depth*2, "", n.Data, bytes.Join(attrs, []byte(" ")))
+		} else {
+			fmt.Fprintf(out, "%*s<%s%s />\n", depth*2, "", n.Data, bytes.Join(attrs, []byte(" ")))
+		}
 		depth++
+	}
+
+	if n.Type == html.TextNode || n.Type == html.CommentNode {
+		b := []byte(n.Data)
+		for _, l := range bytes.Split(b, []byte("\n")) {
+			if len(bytes.TrimSpace(l)) != 0 {
+				fmt.Fprintf(out, "%*s%s\n", depth*2, "", l)
+			}
+		}
 	}
 }
 
 func endElement(n *html.Node) {
 	if n.Type == html.ElementNode {
 		depth--
-		fmt.Printf("%*s</%s>\n", depth*2, "", n.Data)
+		if n.FirstChild != nil {
+			fmt.Fprintf(out, "%*s</%s>\n", depth*2, "", n.Data)
+		}
 	}
 }
