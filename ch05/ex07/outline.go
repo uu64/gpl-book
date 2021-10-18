@@ -51,7 +51,8 @@ var depth int
 var out io.Writer = os.Stdout
 
 func startElement(n *html.Node) {
-	if n.Type == html.ElementNode {
+	switch n.Type {
+	case html.ElementNode:
 		attrs := [][]byte{[]byte("")}
 		for _, a := range n.Attr {
 			b := []byte(fmt.Sprintf("%s=\"%s\"", a.Key, a.Val))
@@ -63,9 +64,7 @@ func startElement(n *html.Node) {
 			fmt.Fprintf(out, "%*s<%s%s />\n", depth*2, "", n.Data, bytes.Join(attrs, []byte(" ")))
 		}
 		depth++
-	}
-
-	if n.Type == html.TextNode {
+	case html.TextNode:
 		b := []byte(n.Data)
 		for _, l := range bytes.Split(b, []byte("\n")) {
 			l = bytes.TrimSpace(l)
@@ -73,9 +72,7 @@ func startElement(n *html.Node) {
 				fmt.Fprintf(out, "%*s%s\n", depth*2, "", l)
 			}
 		}
-	}
-
-	if n.Type == html.CommentNode {
+	case html.CommentNode:
 		b := []byte(n.Data)
 		lines := bytes.Split(b, []byte("\n"))
 		if len(lines) == 1 {
@@ -90,14 +87,19 @@ func startElement(n *html.Node) {
 			}
 			fmt.Fprintf(out, "%*s-->\n", depth*2, "")
 		}
+	default:
+		// do nothing
 	}
 }
 
 func endElement(n *html.Node) {
-	if n.Type == html.ElementNode {
+	switch n.Type {
+	case html.ElementNode:
 		depth--
 		if n.FirstChild != nil {
 			fmt.Fprintf(out, "%*s</%s>\n", depth*2, "", n.Data)
 		}
+	default:
+		// do nothing
 	}
 }
