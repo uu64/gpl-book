@@ -65,12 +65,30 @@ func startElement(n *html.Node) {
 		depth++
 	}
 
-	if n.Type == html.TextNode || n.Type == html.CommentNode {
+	if n.Type == html.TextNode {
 		b := []byte(n.Data)
 		for _, l := range bytes.Split(b, []byte("\n")) {
-			if len(bytes.TrimSpace(l)) != 0 {
+			l = bytes.TrimSpace(l)
+			if len(l) != 0 {
 				fmt.Fprintf(out, "%*s%s\n", depth*2, "", l)
 			}
+		}
+	}
+
+	if n.Type == html.CommentNode {
+		b := []byte(n.Data)
+		lines := bytes.Split(b, []byte("\n"))
+		if len(lines) == 1 {
+			fmt.Fprintf(out, "%*s<!-- %s -->\n", depth*2, "", bytes.TrimSpace(lines[0]))
+		} else {
+			fmt.Fprintf(out, "%*s<!--\n", depth*2, "")
+			for _, l := range lines {
+				l = bytes.TrimSpace(l)
+				if len(l) != 0 {
+					fmt.Fprintf(out, "%*s%s\n", (depth+1)*2, "", l)
+				}
+			}
+			fmt.Fprintf(out, "%*s-->\n", depth*2, "")
 		}
 	}
 }

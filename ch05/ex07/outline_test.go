@@ -2,7 +2,6 @@ package main
 
 import (
 	"bytes"
-	"fmt"
 	"log"
 	"strings"
 	"testing"
@@ -12,7 +11,11 @@ import (
 )
 
 var tmpl = template.Must(template.New("tmpl").Parse(`<html>
-  <head />
+  <head>
+    <title>
+      Sample document
+    </title>
+  </head>
   <body>
     {{.}}
   </body>
@@ -25,14 +28,21 @@ func TestForEachNode(t *testing.T) {
 		want string
 	}{
 		{
-			`<img src="apple.gif" alt="This is an apple" style="width:42px;height:42px;"></img>`,
-			buildHTML(`<img src="apple.gif" alt="This is an apple" style="width:42px;height:42px;" />`)},
+			buildHTML(`<img src="apple.gif" alt="This is an apple" style="width:42px;height:42px;"></img>`),
+			buildHTML(`<img src="apple.gif" alt="This is an apple" style="width:42px;height:42px;" />`),
+		},
 		{
-			"<p>This is a sample paragraph.</p>",
-			buildHTML("<p>\n      This is a sample paragraph.\n    </p>")},
+			buildHTML("<p>This is a sample paragraph.</p>"),
+			buildHTML("<p>\n      This is a sample paragraph.\n    </p>"),
+		},
 		{
-			buildHTML("<!-- This is a sample commnt. -->"),
-			buildHTML("<p>\n      This is a sample paragraph.\n    </p>")},
+			buildHTML("<!-- This is a sample comment. -->"),
+			buildHTML("<!-- This is a sample comment. -->"),
+		},
+		{
+			buildHTML("<!-- This is a \nsample comment. -->"),
+			buildHTML("<!--\n      This is a\n      sample comment.\n    -->"),
+		},
 	}
 
 	for _, test := range tests {
@@ -44,7 +54,6 @@ func TestForEachNode(t *testing.T) {
 
 		forEachNode(n, startElement, endElement)
 		got := out.(*bytes.Buffer).String()
-		fmt.Println(got)
 		if got != test.want {
 			t.Errorf("fail: got %v\n", got)
 			t.Errorf("fail: want %v\n", test.want)
