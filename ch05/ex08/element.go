@@ -23,28 +23,49 @@ func main() {
 		log.Fatalf("failed to parse document: %v", err)
 	}
 
-	n := ElementByID(doc, id)
-	fmt.Println(n)
+	ElementByID(doc, id)
+	if targetNode == nil {
+		fmt.Println("Not found")
+	} else {
+		fmt.Printf("'%s' element found\n", targetNode.Data)
+	}
 }
 
-func ElementByID(doc *html.Node, id string) *html.Node {
-	_, n := forEachNode(doc, nil, nil)
-	return n
+var targetID string
+var targetNode *html.Node
+
+// ElementByID finds the first HTML element with the specified id attribute
+func ElementByID(doc *html.Node, id string) {
+	targetID = id
+	targetNode = nil
+	forEachNode(doc, startElement, nil)
 }
 
-func forEachNode(n *html.Node, pre, post func(n *html.Node) bool) (bool, *html.Node) {
+func startElement(n *html.Node) bool {
+	if n.Type == html.ElementNode {
+		for _, a := range n.Attr {
+			if a.Key == "id" && a.Val == targetID {
+				targetNode = n
+				return false
+			}
+		}
+	}
+	return true
+}
+
+func forEachNode(n *html.Node, pre, post func(n *html.Node) bool) bool {
 	if pre != nil && !pre(n) {
-		return false, n
+		return false
 	}
 
 	for c := n.FirstChild; c != nil; c = c.NextSibling {
-		if isContinue, lastNode := forEachNode(c, pre, post); !isContinue {
-			return false, lastNode
+		if isContinue := forEachNode(c, pre, post); !isContinue {
+			return false
 		}
 	}
 
 	if post != nil && !post(n) {
-		return false, n
+		return false
 	}
-	return true, nil
+	return true
 }
