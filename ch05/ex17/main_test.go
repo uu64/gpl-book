@@ -53,6 +53,7 @@ func TestElementsByTagName(t *testing.T) {
 		names []string
 		count int
 	}{
+		{[]string{}, 0},
 		{[]string{"p"}, 4},
 		{[]string{"img"}, 1},
 		{[]string{"span"}, 0},
