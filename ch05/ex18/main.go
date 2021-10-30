@@ -20,13 +20,12 @@ func fetch(url string) (filename string, n int64, err error) {
 		local = "index.html"
 	}
 	f, err := os.Create(local)
-	closeFile := func() {
+	defer func() {
 		// Close file, but prefer error from Copy, if any.
 		if closeErr := f.Close(); err == nil {
 			err = closeErr
 		}
-	}
-	defer closeFile()
+	}()
 
 	if err != nil {
 		return "", 0, err
