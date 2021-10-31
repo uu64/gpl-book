@@ -98,7 +98,7 @@ func TestCopy(t *testing.T) {
 	x.Add(9)
 	y := x.Copy()
 	if got := y.Len(); got != 3 {
-		t.Errorf("Copy error: want 3, got %v\n", got)
+		t.Errorf("Copy error: length should be 3, but %v\n", got)
 	}
 	if !y.Has(1) || !y.Has(9) || !y.Has(144) {
 		t.Errorf("Copy error: want {1 9 144}, got %v\n", y.String())
@@ -115,7 +115,7 @@ func TestAddAll(t *testing.T) {
 
 	x.AddAll(1, 144, 9)
 	if got := x.Len(); got != 3 {
-		t.Errorf("AddAll error: want 3, got %v\n", got)
+		t.Errorf("AddAll error: length should be 3, but %v\n", got)
 	}
 	if !x.Has(1) || !x.Has(9) || !x.Has(144) {
 		t.Errorf("AddAll error: want {1 9 144}, got %v\n", x.String())
