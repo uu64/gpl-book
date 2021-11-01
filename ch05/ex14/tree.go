@@ -88,36 +88,40 @@ func drawTree(absPath string) {
 	indentLast := "    "
 	branchLast := "└── "
 
+	printObjName := func(o FileObject) {
+		var suffix string
+		if o.mode == symlink {
+			dst, err := os.Readlink(o.name)
+			if err != nil {
+				suffix = "[symlink is broken]"
+			} else {
+				suffix = fmt.Sprintf("-> %s", dst)
+			}
+		}
+
+		fmt.Printf("%s %s\n", o.name, suffix)
+	}
+
 	var draw func(child []FileObject, depth int, prefix string)
 	draw = func(child []FileObject, depth int, prefix string) {
 		for i, c := range child {
 			fmt.Print(prefix)
 			if i == len(child)-1 {
 				fmt.Print(branchLast)
+				printObjName(c)
+				if c.mode == directory {
+					draw(tree[filepath.Join(c.path, c.name)], depth+1, prefix+indentLast)
+				}
 			} else {
 				fmt.Print(branch)
-			}
-
-			var suffix string
-			if c.mode == symlink {
-				dst, err := os.Readlink(c.name)
-				if err != nil {
-					suffix = "(symlink is broken)"
-				} else {
-					suffix = fmt.Sprintf("-> %s", dst)
-				}
-			}
-
-			fmt.Printf("%s %s\n", c.name, suffix)
-			if c.mode == directory {
-				if i == len(child)-1 {
-					draw(tree[filepath.Join(c.path, c.name)], depth+1, prefix+indentLast)
-				} else {
+				printObjName(c)
+				if c.mode == directory {
 					draw(tree[filepath.Join(c.path, c.name)], depth+1, prefix+indent)
 				}
 			}
 		}
 	}
+
 	fmt.Println(filepath.Base(absPath))
 	draw(tree[absPath], 1, "")
 }
