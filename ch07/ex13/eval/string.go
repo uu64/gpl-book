@@ -8,12 +8,15 @@ import (
 func (v Var) String() string {
 	return string(v)
 }
+
 func (l literal) String() string {
 	return fmt.Sprintf("%f", l)
 }
+
 func (u unary) String() string {
 	return fmt.Sprintf("%s%s", string(u.op), u.x.String())
 }
+
 func (b binary) String() string {
 	var x, y string
 	x = b.x.String()
@@ -35,6 +38,7 @@ func (b binary) String() string {
 	}
 	return fmt.Sprintf("%s %s %s", x, string(b.op), y)
 }
+
 func (c call) String() string {
 	args := []string{}
 	for _, arg := range c.args {
