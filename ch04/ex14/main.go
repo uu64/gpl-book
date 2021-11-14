@@ -40,17 +40,12 @@ var issueList = template.Must(template.New("issuelist").Parse(`
 </table>
 `))
 
-type searchParams struct {
-	owner string
-	repo  string
-}
-
 func main() {
 	handler := func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "text/html; charset=UTF-8")
 		owner, repo, err := parseURL(r.URL)
 		if err != nil {
-			fmt.Fprintf(w, err.Error())
+			fmt.Fprintf(w, "%v", err.Error())
 		}
 		is := parseQuery(r.URL)
 
