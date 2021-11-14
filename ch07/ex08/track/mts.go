@@ -1,6 +1,8 @@
 package track
 
-import "reflect"
+import (
+	"reflect"
+)
 
 type MultiTierSort struct {
 	Records      []*Track
@@ -18,15 +20,20 @@ func (mts MultiTierSort) Less(i, j int) bool {
 	ri := reflect.Indirect(reflect.ValueOf(mts.Records[i]))
 	rj := reflect.Indirect(reflect.ValueOf(mts.Records[j]))
 
-	c1 := compareByFieldName(ri, rj, mts.PrimaryKey)
-	if c1 != 0 {
-		return c1 == -1
+	if mts.PrimaryKey != "" {
+		c1 := compareByFieldName(ri, rj, mts.PrimaryKey)
+		if c1 != 0 {
+			return c1 == -1
+		}
 	}
 
-	c2 := compareByFieldName(ri, rj, mts.SecondaryKey)
-	if c2 != 0 {
-		return c2 == -1
+	if mts.SecondaryKey != "" {
+		c2 := compareByFieldName(ri, rj, mts.SecondaryKey)
+		if c2 != 0 {
+			return c2 == -1
+		}
 	}
+
 	return false
 }
 
