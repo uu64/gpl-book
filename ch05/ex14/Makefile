@@ -2,13 +2,12 @@ export GO111MODULE=on
 
 .PHONY: setup
 setup:
-	GO111MODULE=off go get \
-		golang.org/x/lint/golint
+	go install honnef.co/go/tools/cmd/staticcheck@latest
 
 .PHONY: lint
 lint:
 	go vet ./...
-	golint ./...
+	staticcheck ./...
 
 .PHONY: fmt
 fmt:
