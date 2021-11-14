@@ -2,13 +2,10 @@ package main
 
 import (
 	"fmt"
-	"regexp"
 	"strings"
 	"unicode"
 	"unicode/utf8"
 )
-
-var pat = regexp.MustCompile(`\$[a-zA-Z0-9]+`)
 
 func findNotWord(b []byte) int {
 	for i := 0; i < len(b); {
@@ -64,8 +61,7 @@ func reverse(s string) string {
 }
 
 func main() {
-	var s string
-	s = "$Hello world!"
+	s := "$Hello world!"
 	fmt.Println(s)
 	fmt.Println(expand(s, toUpper))
 	fmt.Println(expand(s, reverse))

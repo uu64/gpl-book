@@ -29,7 +29,7 @@ func Update(owner, repo, number string, title, body []byte) (*Issue, error) {
 
 	client := oauth2.NewClient(context.Background(),
 		oauth2.StaticTokenSource(&oauth2.Token{AccessToken: os.Getenv("GH_ACCESS_TOKEN")}))
-	resp, err := client.Do(req)
+	resp, _ := client.Do(req)
 	if resp.StatusCode != http.StatusOK {
 		resp.Body.Close()
 		return nil, fmt.Errorf("close failed: %s", resp.Status)

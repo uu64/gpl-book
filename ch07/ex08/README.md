@@ -1,6 +1,6 @@
 # ch07/ex08
 
-```sh
+```
 $ go run ./main.go
 default
 Title               Artist                 Album                     Year  Length  

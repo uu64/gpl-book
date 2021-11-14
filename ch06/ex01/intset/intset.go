@@ -101,8 +101,6 @@ func (s *IntSet) Clear() {
 // Copy copies the set and returns it.
 func (s *IntSet) Copy() *IntSet {
 	var x IntSet
-	for _, word := range s.words {
-		x.words = append(x.words, word)
-	}
+	x.words = append(x.words, s.words...)
 	return &x
 }

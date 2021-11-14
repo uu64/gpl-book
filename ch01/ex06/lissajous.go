@@ -27,14 +27,6 @@ func main() {
 	lissajous(os.Stdout)
 }
 
-func createPalette(nframes int) []color.Color {
-	var palette []color.Color
-	for i := 0; i < nframes; i++ {
-		palette = append(palette, color.RGBA{0, 255, 0, uint8(255 / nframes * i)})
-	}
-	return palette
-}
-
 func fillRect(img *image.Paletted, col color.Color) {
 	rect := img.Rect
 	for h := rect.Min.Y; h < rect.Max.Y; h++ {

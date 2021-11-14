@@ -29,7 +29,7 @@ func Create(owner, repo string, title, body []byte) (*Issue, error) {
 
 	client := oauth2.NewClient(context.Background(),
 		oauth2.StaticTokenSource(&oauth2.Token{AccessToken: os.Getenv("GH_ACCESS_TOKEN")}))
-	resp, err := client.Do(req)
+	resp, _ := client.Do(req)
 	if resp.StatusCode != http.StatusCreated {
 		resp.Body.Close()
 		return nil, fmt.Errorf("create failed: %s", resp.Status)
