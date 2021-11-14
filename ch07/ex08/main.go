@@ -57,6 +57,14 @@ func compareByFieldName(ri, rj reflect.Value, key string) int {
 		} else {
 			return -1
 		}
+	case reflect.Float32, reflect.Float64:
+		if fi.Float() == fj.Float() {
+			return 0
+		} else if fi.Float() > fj.Float() {
+			return 1
+		} else {
+			return -1
+		}
 	case reflect.String:
 		if fi.String() == fj.String() {
 			return 0
