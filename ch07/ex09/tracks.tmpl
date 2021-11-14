@@ -1,0 +1,32 @@
+<h1>{{.TotalCount}} tracks</h1>
+<p>Sort Key: {{.Key}}</p>
+<table>
+  <thead>
+    <tr>
+      <td><a href="/tracks/?primaryKey=Title">Title</a></td>
+      <td><a href="/tracks/?primaryKey=Artist">Artist</a></td>
+      <td><a href="/tracks/?primaryKey=Album">Album</a></td>
+      <td><a href="/tracks/?primaryKey=Year">Year</a></td>
+      <td><a href="/tracks/?primaryKey=Length">Length</a></td>
+    </tr>
+  </thead>
+  <tbody>
+    {{range .Tracks}}
+    <tr>
+      <td>{{.Title}}</td>
+      <td>{{.Artist}}</td>
+      <td>{{.Album}}</td>
+      <td>{{.Year}}</td>
+      <td>{{.Length}}</td>
+    </tr>
+    {{end}}
+  </tbody>
+</table>
+<style type="text/css">
+td {
+  padding: 0rem 1rem;
+}
+thead td {
+  font-weight: bold;
+}
+</style>
