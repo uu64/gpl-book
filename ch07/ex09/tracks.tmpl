@@ -1,5 +1,5 @@
-<h1>{{.TotalCount}} tracks</h1>
-<p>Sort Key: {{.Key}}</p>
+<h1>{{len .Records}} tracks</h1>
+<p>Sort Key: {{.PrimaryKey}}</p>
 <table>
   <thead>
     <tr>
@@ -11,7 +11,7 @@
     </tr>
   </thead>
   <tbody>
-    {{range .Tracks}}
+    {{range .Records}}
     <tr>
       <td>{{.Title}}</td>
       <td>{{.Artist}}</td>

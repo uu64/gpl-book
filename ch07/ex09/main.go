@@ -1,12 +1,17 @@
 package main
 
 import (
+	"fmt"
+	"html/template"
+	"log"
 	"net/http"
+	"net/url"
 	"sort"
 
-	"github.com/gin-gonic/gin"
 	"github.com/uu64/gpl-book/ch07/ex08/track"
 )
+
+var trackList = template.Must(template.ParseFiles("tracks.tmpl"))
 
 var tracks = []*track.Track{
 	track.New("Go", "Delilah", "From the Roots Up", 2012, track.Length("3m38s")),
@@ -24,17 +29,22 @@ var mts = track.MultiTierSort{
 }
 
 func main() {
-	router := gin.Default()
-	router.LoadHTMLFiles("tracks.tmpl")
-	router.GET("/tracks", func(c *gin.Context) {
-		primaryKey := c.DefaultQuery("primaryKey", "")
+	handler := func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "text/html; charset=UTF-8")
+		primaryKey := parseQuery(r.URL)
 		mts.PrimaryKey = primaryKey
 		sort.Sort(mts)
-		c.HTML(http.StatusOK, "tracks.tmpl", gin.H{
-			"TotalCount": len(mts.Records),
-			"Tracks":     mts.Records,
-			"Key":        mts.PrimaryKey,
-		})
-	})
-	router.Run(":8080")
+		if err := trackList.Execute(w, mts); err != nil {
+			log.Fatal(err)
+		}
+	}
+	http.HandleFunc("/tracks/", handler)
+	fmt.Println("listen and serve... http://localhost:8080")
+	log.Fatal(http.ListenAndServe("localhost:8080", nil))
+}
+
+func parseQuery(url *url.URL) (primaryKey string) {
+	q := url.Query()
+	primaryKey = q.Get("primaryKey")
+	return
 }
