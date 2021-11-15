@@ -48,3 +48,18 @@ func (c call) Eval(env Env) float64 {
 	}
 	panic(fmt.Sprintf("unsupported function call: %s", c.fn))
 }
+
+func (f factorial) Eval(env Env) float64 {
+	var fact func(n float64) float64
+	fact = func(n float64) float64 {
+		if n == 0 {
+			return 1
+		}
+		return n * fact(n-1)
+	}
+	switch f.op {
+	case '!':
+		return fact(f.x.Eval(env))
+	}
+	panic(fmt.Sprintf("unsupported factorial operator: %q", f.op))
+}

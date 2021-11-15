@@ -46,3 +46,7 @@ func (c call) String() string {
 	}
 	return fmt.Sprintf("%s(%s)", c.fn, strings.Join(args, ", "))
 }
+
+func (f factorial) String() string {
+	return fmt.Sprintf("%s%s", f.x.String(), string(f.op))
+}

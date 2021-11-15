@@ -117,6 +117,11 @@ func parsePrimary(lex *lexer) Expr {
 		id := lex.text()
 		lex.next() // consume Ident
 		if lex.token != '(' {
+			if lex.token == '!' {
+				op := lex.token
+				lex.next() // consume '!'
+				return factorial{op, Var(id)}
+			}
 			return Var(id)
 		}
 		lex.next() // consume '('
@@ -143,6 +148,11 @@ func parsePrimary(lex *lexer) Expr {
 			panic(lexPanic(err.Error()))
 		}
 		lex.next() // consume number
+		if lex.token == '!' {
+			op := lex.token
+			lex.next() // consume '!'
+			return factorial{op, literal(f)}
+		}
 		return literal(f)
 
 	case '(':

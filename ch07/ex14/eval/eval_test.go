@@ -23,6 +23,11 @@ func TestEval(t *testing.T) {
 		{"-1 + -x", Env{"x": 1}, "-2"},
 		{"-1 - x", Env{"x": 1}, "-2"},
 		//!+Eval
+		{"3!", Env{"x": 1}, "6"},
+		{"3 !", Env{"x": 1}, "6"},
+		{"x!", Env{"x": 5}, "120"},
+		{"x! + 1", Env{"x": 5}, "121"},
+		{"2*x! + 1", Env{"x": 5}, "241"},
 	}
 	var prevExpr string
 	for _, test := range tests {
@@ -52,6 +57,7 @@ func TestErrors(t *testing.T) {
 		{`"hello"`, "unexpected '\"'"},
 		{"log(10)", `unknown function "log"`},
 		{"sqrt(1, 2)", "call to sqrt has 2 args, want 1"},
+		{"3!!", "unexpected '!'"},
 	} {
 		expr, err := Parse(test.expr)
 		if err == nil {

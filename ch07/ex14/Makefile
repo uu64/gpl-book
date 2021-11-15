@@ -15,7 +15,7 @@ fmt:
 
 .PHONY: test
 test:
-	go test ./...
+	go test -v ./...
 
 .PHONY: test-bench
 test-bench:

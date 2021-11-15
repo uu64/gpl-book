@@ -36,3 +36,9 @@ type call struct {
 	fn   string // one of "pow", "sin", "sqrt"
 	args []Expr
 }
+
+// A factorial represents a factorial operator expression, e.g., 3!.
+type factorial struct {
+	op rune // '!'
+	x  Expr
+}

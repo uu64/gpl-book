@@ -20,6 +20,10 @@ func TestString(t *testing.T) {
 		{"5 / 9 * (F - 3 / 32 - 4)"},
 		{"-1 + -x"},
 		{"-1 - x"},
+		{"3!"},
+		{"x!"},
+		{"x! + 1"},
+		{"2*x! + 1"},
 	}
 	for _, test := range tests {
 		expr1, err := Parse(test.expr)
