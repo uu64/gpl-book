@@ -1,2 +1,51 @@
-<h1>Hello, World</h1>
-<script src="/assets/index.js" async></script>
+<!DOCTYPE html>
+<html>
+  <head>
+    <script src="/assets/index.js" async></script>
+    <link rel="stylesheet" href="/assets/index.css" type="text/css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro&display=swap" rel="stylesheet">
+  </head>
+  <h1>Simple calculator</h1>
+  <div class="main">
+    <div class="display">
+      <div id="expr"></div>
+      <div id="answer"></div>
+    </div>
+    <table class="buttons">
+      <body>
+        <tr>
+          <td><button onclick="input('(')" class="button op">(</button></td>
+          <td><button onclick="input(')')" class="button op">)</button></td>
+          <td><button onclick="input('!')" class="button op">!</button></td>
+          <td><button onclick="ce('CE')" class="button op">CE</button></td>
+        </tr>
+        <tr>
+          <td><button onclick="input('7')" class="button">7</button></td>
+          <td><button onclick="input('8')" class="button">8</button></td>
+          <td><button onclick="input('9')" class="button">9</button></td>
+          <td><button onclick="input('/')" class="button op">/</button></td>
+        </tr>
+        <tr>
+          <td><button onclick="input('4')" class="button">4</button></td>
+          <td><button onclick="input('5')" class="button">5</button></td>
+          <td><button onclick="input('6')" class="button">6</button></td>
+          <td><button onclick="input('*')" class="button op">*</button></td>
+        </tr>
+        <tr>
+          <td><button onclick="input('1')" class="button">1</button></td>
+          <td><button onclick="input('2')" class="button">2</button></td>
+          <td><button onclick="input('3')" class="button">3</button></td>
+          <td><button onclick="input('-')" class="button op">-</button></td>
+        </tr>
+        <tr>
+          <td><button onclick="input('0')" class="button">0</button></td>
+          <td><button onclick="input('.')" class="button">.</button></td>
+          <td><button onclick="enter()" class="button eq">=</button></td>
+          <td><button onclick="input('+')" class="button op">+</button></td>
+        </tr>
+      </body>
+    </table>
+  </div>
+</html>
