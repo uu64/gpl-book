@@ -38,7 +38,6 @@ func main() {
 
 	// prompts the user to provide values
 	env := eval.Env{}
-	env["x"] = 1
 	for k := range vars {
 		fmt.Printf("'%s'?: ", k)
 		for scanner.Scan() {
