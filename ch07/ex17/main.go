@@ -9,10 +9,13 @@ import (
 )
 
 func main() {
-	parse(os.Stdin, os.Stdout, os.Args[1:])
+	if err := parse(os.Stdin, os.Stdout, os.Args[1:]); err != nil {
+		fmt.Fprintf(os.Stderr, "xmlselect: %v\n", err)
+		os.Exit(1)
+	}
 }
 
-func parse(r io.Reader, w io.Writer, path []string) {
+func parse(r io.Reader, w io.Writer, path []string) error {
 	dec := xml.NewDecoder(r)
 	var stack []*xml.StartElement // stack of element names
 	for {
@@ -20,8 +23,7 @@ func parse(r io.Reader, w io.Writer, path []string) {
 		if err == io.EOF {
 			break
 		} else if err != nil {
-			fmt.Fprintf(os.Stderr, "xmlselect: %v\n", err)
-			os.Exit(1)
+			return err
 		}
 		switch tok := tok.(type) {
 		case xml.StartElement:
@@ -42,6 +44,7 @@ func parse(r io.Reader, w io.Writer, path []string) {
 			}
 		}
 	}
+	return nil
 }
 
 // containsAll reports whether x contains the elements of y, in order.

@@ -29,7 +29,9 @@ func TestParse(t *testing.T) {
 	}
 	for _, test := range tests {
 		out := new(bytes.Buffer)
-		parse(bytes.NewBufferString(doc), out, test.path)
+		if err := parse(bytes.NewBufferString(doc), out, test.path); err != nil {
+			t.Errorf("unepected error: %v, path: %v\n", err, test.path)
+		}
 
 		if out.String() != test.want {
 			t.Errorf("path: %v, out:\n%s\n", test.path, out.String())
