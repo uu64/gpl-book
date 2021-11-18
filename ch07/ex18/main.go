@@ -27,7 +27,7 @@ func printTree(n Node, indent int) {
 	case *Element:
 		items := []string{n.Type.Local}
 		for _, a := range n.Attr {
-			items = append(items, fmt.Sprintf("%s='%s'", a.Name.Local, a.Value))
+			items = append(items, fmt.Sprintf("%s=\"%s\"", a.Name.Local, a.Value))
 		}
 		fmt.Printf("%s<%s>\n", strings.Repeat("  ", indent), strings.Join(items, " "))
 		for _, c := range n.Children {
