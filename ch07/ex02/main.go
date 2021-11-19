@@ -15,10 +15,10 @@ type ByteCounter struct {
 // Write writes the bytes to ByteCounter.
 func (c *ByteCounter) Write(p []byte) (int, error) {
 	n, err := c.writer.Write(p)
-	if err != nil {
-		return 0, err
-	}
 	c.len += int64(n)
+	if err != nil {
+		return n, err
+	}
 	return n, nil
 }
 
