@@ -9,7 +9,7 @@ import (
 
 // Reader implements the io.Reader
 type Reader struct {
-	doc string
+	doc []byte
 }
 
 // Read implements the interface of the io.Reader
@@ -24,13 +24,13 @@ func (r *Reader) Read(p []byte) (n int, err error) {
 		end = len(d)
 	}
 	n = copy(p, d[:end])
-	r.doc = string(d[end:])
+	r.doc = d[end:]
 	return
 }
 
 // NewReader returns a new Reader
 func NewReader(s string) *Reader {
-	return &Reader{s}
+	return &Reader{[]byte(s)}
 }
 
 const doc = `
@@ -48,13 +48,13 @@ const doc = `
       <li>Coffee</li>
       <li>Tea</li>
       <li>Milk</li>
-    </ul>  
+    </ul>
     <h2>An Ordered HTML List</h2>
     <ol>
       <li>Coffee</li>
       <li>Tea</li>
       <li>Milk</li>
-    </ol> 
+    </ol>
   </body>
   </html>
 `
