@@ -23,6 +23,7 @@ var prereqs = map[string][]string{
 	"networks":              {"operating systems"},
 	"operating systems":     {"data structures", "computer organization"},
 	"programming languages": {"data structures", "computer organization"},
+	"intro to programming":  {"data structures"},
 }
 
 func main() {
@@ -41,21 +42,21 @@ func topoSort(m map[string][]string) ([]string, map[string][]string) {
 	seen := make(map[string]bool)
 	cycle := make(map[string][]string)
 
-	contains := func(path []string, item string) bool {
-		for _, p := range path {
+	contains := func(path []string, item string) int {
+		for i, p := range path {
 			if p == item {
-				return true
+				return i
 			}
 		}
-		return false
+		return -1
 	}
 
 	var visitAll func(item string, path []string)
 
 	visitAll = func(item string, path []string) {
-		if contains(path, item) {
-			for i, p := range path {
-				cycle[p] = append(cycle[p], path[:i]...)
+		if idx := contains(path, item); idx != -1 {
+			for i, p := range path[idx:] {
+				cycle[p] = append(cycle[p], path[idx:i]...)
 				cycle[p] = append(cycle[p], path[i+1:]...)
 			}
 			return
