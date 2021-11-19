@@ -93,9 +93,7 @@ func (s *IntSet) Remove(x int) {
 
 // Clear removes the all value in the set.
 func (s *IntSet) Clear() {
-	for i := range s.words {
-		s.words[i] = 0
-	}
+	s.words = nil
 }
 
 // Copy copies the set and returns it.

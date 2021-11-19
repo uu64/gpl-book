@@ -42,19 +42,19 @@ func TestRemove(t *testing.T) {
 	x.Add(144)
 	x.Add(9)
 
-	x.Remove(9)
-	if got := x.Len(); got != 2 {
+	x.Remove(160)
+	if got := x.Len(); got != 3 {
 		t.Errorf("(%v).Len() returns %v\n", x.String(), got)
 	}
-	if !(x.Has(1) && x.Has(144) && !x.Has(9)) {
+	if !(x.Has(1) && x.Has(144) && x.Has(9)) {
 		t.Errorf("remove error: want {1 144}, got %v\n", x.String())
 	}
 
-	x.Remove(2)
+	x.Remove(144)
 	if got := x.Len(); got != 2 {
 		t.Errorf("(%v).Len() returns %v\n", x.String(), got)
 	}
-	if !(x.Has(1) && x.Has(144) && !x.Has(9)) {
+	if !(x.Has(1) && !x.Has(144) && x.Has(9)) {
 		t.Errorf("remove error: want {1 144}, got %v\n", x.String())
 	}
 }
