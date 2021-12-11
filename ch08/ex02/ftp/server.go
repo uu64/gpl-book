@@ -29,24 +29,53 @@ func (srv *Server) serve(ln net.Listener) error {
 		if err != nil {
 			return err
 		}
-		go srv.handler(conn)
+		go srv.handler(newConn(conn))
 	}
 }
 
-func (srv *Server) handler(conn net.Conn) {
-	defer conn.Close()
-	fmt.Fprintf(conn, "%s", Status220)
+func (srv *Server) handler(fc *ftpConn) {
+	defer fc.close()
 
-	s := bufio.NewScanner(conn)
+	// TODO: error handling
+	fc.accept()
+
+	s := bufio.NewScanner(fc.conn)
 	for s.Scan() {
-		fmt.Println(s.Text())
+		var err error
+
 		input := strings.Fields(s.Text())
-		command, _ := input[0], input[1:]
+		command, args := input[0], input[1:]
+		fmt.Println(input)
+
+		// minimum implementation
+		// https://datatracker.ietf.org/doc/html/rfc959#section-5
 		switch command {
 		case "USER":
-			fmt.Println("USER")
+			err = fc.user(args[0])
+		case "QUIT":
+			fmt.Println(command)
+		case "PORT":
+			fmt.Println(command)
+		case "TYPE":
+			fmt.Println(command)
+		case "MODE":
+			fmt.Println(command)
+		case "STRU":
+			fmt.Println(command)
+		case "RETR":
+			fmt.Println(command)
+		case "STOR":
+			fmt.Println(command)
+		case "NOOP":
+			fmt.Println(command)
 		default:
-			fmt.Println("unknown")
+			fc.reply(status500)
+		}
+
+		if err != nil {
+			// TODO: error handling
+			fmt.Printf("%v\n", err)
+			break
 		}
 	}
 }
