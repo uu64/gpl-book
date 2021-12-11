@@ -53,7 +53,9 @@ func (srv *Server) handler(fc *ftpConn) {
 		case "USER":
 			err = fc.user(args[0])
 		case "QUIT":
-			fmt.Println(command)
+			if err = fc.quit(); err == nil {
+				goto L
+			}
 		case "PORT":
 			fmt.Println(command)
 		case "TYPE":
@@ -78,6 +80,8 @@ func (srv *Server) handler(fc *ftpConn) {
 			break
 		}
 	}
+L:
+	fmt.Println("finish")
 }
 
 func ListenAndServe(addr string) error {

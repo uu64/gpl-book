@@ -6,5 +6,7 @@ const (
 	// USER
 	status230 = "230 User loggedin, proceed.\n"
 	status530 = "530 Not loggedin.\n"
-	status331 = "331 User name okay, need password\n"
+	status331 = "331 User name okay, need password.\n"
+	// QUIT
+	status221 = "221 Service closing control connection.\n"
 )
