@@ -49,10 +49,24 @@ func newConn(c net.Conn) (*ftpConn, error) {
 	}, nil
 }
 
+func (fc *ftpConn) openDataConn() (net.Conn, error) {
+	var network, addr string
+	if fc.remote.protocol == protocolIp4 {
+		network = "tcp4"
+		addr = fmt.Sprintf("%s:%s", *fc.remote.addr, *fc.remote.port)
+	} else {
+		network = "tcp6"
+		addr = fmt.Sprintf("[%s]:%s", *fc.remote.addr, *fc.remote.port)
+	}
+
+	return net.Dial(network, addr)
+}
+
 func (fc *ftpConn) isLogin() bool {
 	return fc.remote.username != nil
 }
 
+// TODO: たまに返信に失敗する
 func (fc *ftpConn) reply(status string) error {
 	_, err := fmt.Fprintf(fc.conn, "%s\n", status)
 	if err != nil {
@@ -126,24 +140,19 @@ func (fc *ftpConn) retr(args []string) (status string, err error) {
 		return
 	}
 
-	var network, addr string
-	if fc.remote.protocol == protocolIp4 {
-		network = "tcp4"
-		addr = fmt.Sprintf("%s:%s", *fc.remote.addr, *fc.remote.port)
-	} else {
-		network = "tcp6"
-		addr = fmt.Sprintf("[%s]:%s", *fc.remote.addr, *fc.remote.port)
-	}
-
-	conn, err := net.Dial(network, addr)
+	conn, err := fc.openDataConn()
 	if err != nil {
 		status = status425
 		return
 	}
 
 	defer func() {
-		if err != nil {
-			fc.reply(status426)
+		// TODO: error handling
+		if err == nil {
+			fc.reply(status226)
+			status = status250
+		} else {
+			status = status426
 		}
 		conn.Close()
 	}()
@@ -153,8 +162,81 @@ func (fc *ftpConn) retr(args []string) (status string, err error) {
 		status = status550
 		return
 	}
+
+	defer func() {
+		err = f.Close()
+		if err != nil {
+			status = status552
+		}
+	}()
+
 	// TODO: asciiモードでは改行コードをCRLFにする
 	_, err = io.Copy(conn, f)
+	if err != nil {
+		status = status451
+		return
+	}
+
+	return
+}
+
+func (fc *ftpConn) stor(args []string) (status string, err error) {
+	if !fc.isLogin() {
+		status = status530
+		return
+	}
+
+	if len(args) != 1 {
+		status = status501
+		return
+	}
+
+	path := args[0]
+	info, err := os.Stat(path)
+	if err == nil && info.IsDir() {
+		status = status550
+		err = fmt.Errorf("target is a directory")
+		return
+	}
+
+	if err = fc.reply(status150); err != nil {
+		return
+	}
+
+	conn, err := fc.openDataConn()
+	if err != nil {
+		status = status425
+		return
+	}
+
+	defer func() {
+		// TODO: error handling
+		if err == nil {
+			fc.reply(status226)
+		} else {
+			fc.reply(status426)
+		}
+		conn.Close()
+		fmt.Println("closed")
+		status = status250
+	}()
+
+	f, err := os.Create(path)
+	if err != nil {
+		status = status550
+		return
+	}
+
+	defer func() {
+		err = f.Close()
+		if err != nil {
+			status = status552
+		}
+	}()
+
+	// NOTE: 複数回同じファイルに書き込むと失敗する
+	// TODO: asciiモードでは改行コードをCRLFにする
+	_, err = io.Copy(f, conn)
 	if err != nil {
 		status = status451
 		return

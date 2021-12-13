@@ -25,6 +25,7 @@ const (
 )
 
 const (
+	// status125 = "125 Data connection already open; transfer starting."
 	status150 = "150 File status okay; about to open data connection."
 
 	status200 = "200 Command okay."
@@ -41,6 +42,7 @@ const (
 	status426 = "426 Connection closed; transfer aborted."
 	status450 = "450 Requested file action not taken."
 	status451 = "451 Requested action aborted. Local error in processing."
+	status452 = "452 Requested action not taken."
 
 	status500 = "500 Syntax error, command unrecognized."
 	status501 = "501 Syntax error in parameters or arguments."
@@ -49,4 +51,7 @@ const (
 	status504 = "504 Command not implemented for that parameter."
 	status530 = "530 Not loggedin."
 	status550 = "550 Requested action not taken."
+	status551 = "551 Requested action aborted. Page type unknown."
+	status552 = "552 Requested file action aborted."
+	status553 = "553 Requested action not taken."
 )

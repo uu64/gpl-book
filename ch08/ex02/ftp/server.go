@@ -81,7 +81,7 @@ func (srv *Server) handler(fc *ftpConn) {
 		case "RETR":
 			status, err = fc.retr(args)
 		case "STOR":
-			fmt.Println(command)
+			status, err = fc.stor(args)
 		case "NOOP":
 			status, err = fc.noop()
 		// NOTE:
@@ -94,6 +94,7 @@ func (srv *Server) handler(fc *ftpConn) {
 			err = fmt.Errorf("command is not supported: %s", command)
 		}
 
+		fmt.Println(status)
 		if err != nil {
 			fmt.Printf("%v\n", err)
 		}
@@ -103,7 +104,6 @@ func (srv *Server) handler(fc *ftpConn) {
 		}
 	}
 L:
-	fmt.Println("finish")
 }
 
 func ListenAndServe(addr string) error {
