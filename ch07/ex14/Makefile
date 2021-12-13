@@ -26,4 +26,4 @@ all: lint fmt test
 
 .PHONY: build
 build: lint fmt test
-	go build -o issues main.go
+	go build
