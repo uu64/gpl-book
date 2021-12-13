@@ -1,6 +1,25 @@
 package ftp
 
 const (
+	typeAscii = "A"
+	// typeImage  = "I"
+	// typeLocal  = "L"
+	// typeEbcdic = "E"
+)
+
+const (
+	modeStream = "S"
+	// modeBlock      = "B"
+	// modeCompressed = "C"
+)
+
+const (
+	struFile = "F"
+	// struRecord = "R"
+	// struPage   = "P"
+)
+
+const (
 	status200 = "200 Command okay."
 	status220 = "220 Service ready for new user."
 	status221 = "221 Service closing control connection."

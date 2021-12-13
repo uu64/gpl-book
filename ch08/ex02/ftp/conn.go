@@ -9,12 +9,19 @@ import (
 type ftpConn struct {
 	conn   net.Conn
 	remote *remote
+	param  *transferParameter
 }
 
 type remote struct {
 	username *string
-	addr     string
-	port     string
+	addr     *string
+	port     *string
+}
+
+type transferParameter struct {
+	dataType  string
+	mode      string
+	structure string
 }
 
 func newConn(c net.Conn) (*ftpConn, error) {
@@ -26,7 +33,12 @@ func newConn(c net.Conn) (*ftpConn, error) {
 		conn: c,
 		remote: &remote{
 			username: nil,
-			port:     port,
+			port:     &port,
+		},
+		param: &transferParameter{
+			dataType:  typeAscii,
+			mode:      modeStream,
+			structure: struFile,
 		},
 	}, nil
 }
@@ -83,7 +95,8 @@ func (fc *ftpConn) port(args []string) error {
 	}
 
 	h1, h2, h3, h4, p1, p2 := args[0], args[1], args[2], args[3], args[4], args[5]
-	fc.remote.addr = fmt.Sprintf("%s.%s.%s.%s", h1, h2, h3, h4)
+	addr := fmt.Sprintf("%s.%s.%s.%s", h1, h2, h3, h4)
+	fc.remote.addr = &addr
 
 	p1i, err := strconv.Atoi(p1)
 	if err != nil {
@@ -95,9 +108,27 @@ func (fc *ftpConn) port(args []string) error {
 		return fc.reply(status501)
 	}
 
-	port := (p1i * 256) + p2i
-	fc.remote.port = strconv.Itoa(port)
+	port := strconv.Itoa((p1i * 256) + p2i)
+	fc.remote.port = &port
 
+	return fc.reply(status200)
+}
+
+func (fc *ftpConn) setType(args []string) error {
+	if !fc.isLogin() {
+		return fc.reply(status530)
+	}
+
+	if len(args) != 1 {
+		return fc.reply(status501)
+	}
+
+	dataType := args[0]
+	if dataType != typeAscii {
+		return fc.reply(status504)
+	}
+
+	fc.param.dataType = dataType
 	return fc.reply(status200)
 }
 

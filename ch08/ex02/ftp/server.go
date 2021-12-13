@@ -49,7 +49,8 @@ func (srv *Server) handler(fc *ftpConn) {
 		var err error
 
 		input := strings.Fields(s.Text())
-		command, args := input[0], input[1:]
+		command, args := strings.ToUpper(input[0]), input[1:]
+
 		fmt.Println(input)
 
 		// minimum implementation
@@ -68,7 +69,7 @@ func (srv *Server) handler(fc *ftpConn) {
 		case "PORT":
 			err = fc.port(args)
 		case "TYPE":
-			fmt.Println(command)
+			err = fc.setType(args)
 		case "MODE":
 			fmt.Println(command)
 		case "STRU":
@@ -81,12 +82,12 @@ func (srv *Server) handler(fc *ftpConn) {
 			err = fc.noop()
 		default:
 			fc.reply(status502)
+			err = fmt.Errorf("command not implemented: %s", command)
 		}
 
 		if err != nil {
-			// TODO: error handling
 			fmt.Printf("%v\n", err)
-			break
+			goto L
 		}
 	}
 L:
