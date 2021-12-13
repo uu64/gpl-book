@@ -1,8 +1,13 @@
 package ftp
 
 const (
+	protocolIp4 = "ip4"
+	protocolIp6 = "ip6"
+)
+
+const (
 	typeAscii = "A"
-	// typeImage  = "I"
+	typeImage = "I"
 	// typeLocal  = "L"
 	// typeEbcdic = "E"
 )
@@ -20,14 +25,22 @@ const (
 )
 
 const (
+	status150 = "150 File status okay; about to open data connection."
+
 	status200 = "200 Command okay."
 	status220 = "220 Service ready for new user."
 	status221 = "221 Service closing control connection."
+	status226 = "226 Closing data connection."
 	status230 = "230 User loggedin, proceed."
+	status250 = "250 Requested file action okay, completed."
 
 	// status331 = "331 User name okay, need password."
 
 	// status421 = "421 Service not available, closing control connection."
+	status425 = "425 Can't open data connection."
+	status426 = "426 Connection closed; transfer aborted."
+	status450 = "450 Requested file action not taken."
+	status451 = "451 Requested action aborted. Local error in processing."
 
 	status500 = "500 Syntax error, command unrecognized."
 	status501 = "501 Syntax error in parameters or arguments."
@@ -35,4 +48,5 @@ const (
 	status503 = "503 Bad sequence of commands."
 	status504 = "504 Command not implemented for that parameter."
 	status530 = "530 Not loggedin."
+	status550 = "550 Requested action not taken."
 )

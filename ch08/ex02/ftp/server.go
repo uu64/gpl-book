@@ -46,6 +46,7 @@ func (srv *Server) handler(fc *ftpConn) {
 
 	s := bufio.NewScanner(fc.conn)
 	for s.Scan() {
+		var status string
 		var err error
 
 		input := strings.Fields(s.Text())
@@ -53,13 +54,14 @@ func (srv *Server) handler(fc *ftpConn) {
 
 		fmt.Println(input)
 
-		// minimum implementation
-		// https://datatracker.ietf.org/doc/html/rfc959#section-5
 		switch command {
+		// NOTE:
+		// FILE TRANSFER PROTOCOL (FTP) / minimum implementation
+		// https://datatracker.ietf.org/doc/html/rfc959#section-5
 		case "USER":
-			err = fc.user(args)
+			status, err = fc.user(args)
 		case "QUIT":
-			err = fc.quit()
+			status, err = fc.quit()
 			// forから抜けるためエラー処理後にgotoする
 			if err != nil {
 				// TODO: error handling
@@ -67,27 +69,35 @@ func (srv *Server) handler(fc *ftpConn) {
 			}
 			goto L
 		case "PORT":
-			err = fc.setRemotePort(args)
+			status, err = fc.port(args)
 		case "TYPE":
-			err = fc.setDataType(args)
+			status, err = fc.dataType(args)
 		case "MODE":
-			err = fc.setTransferMode(args)
+			status, err = fc.mode(args)
 		case "STRU":
-			err = fc.setDataStructure(args)
+			status, err = fc.stru(args)
 		case "RETR":
-			fmt.Println(command)
+			status, err = fc.retr(args)
 		case "STOR":
 			fmt.Println(command)
 		case "NOOP":
-			err = fc.noop()
+			status, err = fc.noop()
+		// NOTE:
+		// FTP Extensions for IPv6 and NATs
+		// https://datatracker.ietf.org/doc/html/rfc2428
+		case "EPRT":
+			status, err = fc.eprt(args)
 		default:
-			fc.reply(status502)
-			err = fmt.Errorf("command not implemented: %s", command)
+			status = status502
+			err = fmt.Errorf("command is not supported: %s", command)
 		}
 
 		if err != nil {
 			fmt.Printf("%v\n", err)
-			goto L
+		}
+		if status != "" {
+			// TODO: error handling
+			fc.reply(status)
 		}
 	}
 L:
