@@ -29,7 +29,12 @@ func (srv *Server) serve(ln net.Listener) error {
 		if err != nil {
 			return err
 		}
-		go srv.handler(newConn(conn))
+
+		ftpConn, err := newConn(conn)
+		if err != nil {
+			return err
+		}
+		go srv.handler(ftpConn)
 	}
 }
 
@@ -53,9 +58,13 @@ func (srv *Server) handler(fc *ftpConn) {
 		case "USER":
 			err = fc.user(args[0])
 		case "QUIT":
-			if err = fc.quit(); err == nil {
-				goto L
+			err = fc.quit()
+			// forから抜けるためエラー処理後にgotoする
+			if err != nil {
+				// TODO: error handling
+				fmt.Printf("%v\n", err)
 			}
+			goto L
 		case "PORT":
 			fmt.Println(command)
 		case "TYPE":
@@ -69,7 +78,7 @@ func (srv *Server) handler(fc *ftpConn) {
 		case "STOR":
 			fmt.Println(command)
 		case "NOOP":
-			fmt.Println(command)
+			err = fc.noop()
 		default:
 			fc.reply(status500)
 		}

@@ -9,4 +9,6 @@ const (
 	status331 = "331 User name okay, need password.\n"
 	// QUIT
 	status221 = "221 Service closing control connection.\n"
+	// NOOP
+	status200 = "200 Command okay."
 )
