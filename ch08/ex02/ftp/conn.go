@@ -85,7 +85,7 @@ func (fc *ftpConn) quit() error {
 	return fc.reply(status221)
 }
 
-func (fc *ftpConn) port(args []string) error {
+func (fc *ftpConn) setRemotePort(args []string) error {
 	if !fc.isLogin() {
 		return fc.reply(status530)
 	}
@@ -114,7 +114,7 @@ func (fc *ftpConn) port(args []string) error {
 	return fc.reply(status200)
 }
 
-func (fc *ftpConn) setType(args []string) error {
+func (fc *ftpConn) setDataType(args []string) error {
 	if !fc.isLogin() {
 		return fc.reply(status530)
 	}
@@ -129,6 +129,42 @@ func (fc *ftpConn) setType(args []string) error {
 	}
 
 	fc.param.dataType = dataType
+	return fc.reply(status200)
+}
+
+func (fc *ftpConn) setTransferMode(args []string) error {
+	if !fc.isLogin() {
+		return fc.reply(status530)
+	}
+
+	if len(args) != 1 {
+		return fc.reply(status501)
+	}
+
+	mode := args[0]
+	if mode != modeStream {
+		return fc.reply(status504)
+	}
+
+	fc.param.mode = mode
+	return fc.reply(status200)
+}
+
+func (fc *ftpConn) setDataStructure(args []string) error {
+	if !fc.isLogin() {
+		return fc.reply(status530)
+	}
+
+	if len(args) != 1 {
+		return fc.reply(status501)
+	}
+
+	stru := args[0]
+	if stru != struFile {
+		return fc.reply(status504)
+	}
+
+	fc.param.structure = stru
 	return fc.reply(status200)
 }
 

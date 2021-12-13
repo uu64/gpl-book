@@ -67,13 +67,13 @@ func (srv *Server) handler(fc *ftpConn) {
 			}
 			goto L
 		case "PORT":
-			err = fc.port(args)
+			err = fc.setRemotePort(args)
 		case "TYPE":
-			err = fc.setType(args)
+			err = fc.setDataType(args)
 		case "MODE":
-			fmt.Println(command)
+			err = fc.setTransferMode(args)
 		case "STRU":
-			fmt.Println(command)
+			err = fc.setDataStructure(args)
 		case "RETR":
 			fmt.Println(command)
 		case "STOR":
