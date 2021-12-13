@@ -62,6 +62,8 @@ func (srv *Server) handler(fc *ftpConn) {
 			status, err = fc.user(args)
 		case "QUIT":
 			status, err = fc.quit()
+			// TODO: error handling
+			fc.reply(status)
 			// forから抜けるためエラー処理後にgotoする
 			if err != nil {
 				// TODO: error handling
