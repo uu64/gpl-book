@@ -3,6 +3,7 @@ package ftp
 import (
 	"fmt"
 	"net"
+	"strconv"
 )
 
 type ftpConn struct {
@@ -12,6 +13,7 @@ type ftpConn struct {
 
 type remote struct {
 	username *string
+	addr     string
 	port     string
 }
 
@@ -29,8 +31,12 @@ func newConn(c net.Conn) (*ftpConn, error) {
 	}, nil
 }
 
+func (fc *ftpConn) isLogin() bool {
+	return fc.remote.username != nil
+}
+
 func (fc *ftpConn) reply(status string) error {
-	_, err := fmt.Fprintf(fc.conn, "%s", status)
+	_, err := fmt.Fprintf(fc.conn, "%s\n", status)
 	if err != nil {
 		fmt.Println(err)
 		return err
@@ -49,16 +55,50 @@ func (fc *ftpConn) close() {
 	}
 }
 
-func (fc *ftpConn) user(name string) error {
+func (fc *ftpConn) user(args []string) error {
+	if len(args) != 1 {
+		return fc.reply(status501)
+	}
+
+	name := args[0]
 	fc.remote.username = &name
 	// TODO: auth
 	return fc.reply(status230)
 }
 
 func (fc *ftpConn) quit() error {
+	fc.remote.username = nil
 	// TODO: データ転送中ならコネクションはまだ閉じない
 	// TODO: コントロール接続に関してやることはあるか
 	return fc.reply(status221)
+}
+
+func (fc *ftpConn) port(args []string) error {
+	if !fc.isLogin() {
+		return fc.reply(status530)
+	}
+
+	if len(args) != 6 {
+		return fc.reply(status501)
+	}
+
+	h1, h2, h3, h4, p1, p2 := args[0], args[1], args[2], args[3], args[4], args[5]
+	fc.remote.addr = fmt.Sprintf("%s.%s.%s.%s", h1, h2, h3, h4)
+
+	p1i, err := strconv.Atoi(p1)
+	if err != nil {
+		return fc.reply(status501)
+	}
+
+	p2i, err := strconv.Atoi(p2)
+	if err != nil {
+		return fc.reply(status501)
+	}
+
+	port := (p1i * 256) + p2i
+	fc.remote.port = strconv.Itoa(port)
+
+	return fc.reply(status200)
 }
 
 func (fc *ftpConn) noop() error {

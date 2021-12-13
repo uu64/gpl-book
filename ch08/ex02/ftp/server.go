@@ -56,7 +56,7 @@ func (srv *Server) handler(fc *ftpConn) {
 		// https://datatracker.ietf.org/doc/html/rfc959#section-5
 		switch command {
 		case "USER":
-			err = fc.user(args[0])
+			err = fc.user(args)
 		case "QUIT":
 			err = fc.quit()
 			// forから抜けるためエラー処理後にgotoする
@@ -66,7 +66,7 @@ func (srv *Server) handler(fc *ftpConn) {
 			}
 			goto L
 		case "PORT":
-			fmt.Println(command)
+			err = fc.port(args)
 		case "TYPE":
 			fmt.Println(command)
 		case "MODE":
@@ -80,7 +80,7 @@ func (srv *Server) handler(fc *ftpConn) {
 		case "NOOP":
 			err = fc.noop()
 		default:
-			fc.reply(status500)
+			fc.reply(status502)
 		}
 
 		if err != nil {
