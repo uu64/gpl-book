@@ -1,0 +1,11 @@
+go test -bench . -benchmem
+goos: darwin
+goarch: amd64
+pkg: github.com/uu64/gpl-book/ch08/ex05
+cpu: Intel(R) Core(TM) i7-1068NG7 CPU @ 2.30GHz
+BenchmarkDraw-8              	      74	  15996661 ns/op	  640269 B/op	   79981 allocs/op
+BenchmarkConcurrentDraw3-8   	      48	  24499657 ns/op	 2289214 B/op	  149991 allocs/op
+BenchmarkConcurrentDraw5-8   	      62	  19306843 ns/op	 2285145 B/op	  149986 allocs/op
+BenchmarkConcurrentDraw7-8   	      68	  17923667 ns/op	 2283648 B/op	  149985 allocs/op
+PASS
+ok  	github.com/uu64/gpl-book/ch08/ex05	4.957s
