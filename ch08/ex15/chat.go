@@ -35,7 +35,15 @@ func broadcaster() {
 			// clients' outgoing message channels.
 			mu.Lock()
 			for cli := range clients {
-				cli <- msg
+				go func(cli client) {
+					select {
+					case <-time.After(1 * time.Minute):
+						log.Panicln("timeout: send broadcast message")
+						return
+					case cli <- msg:
+						// do nothing
+					}
+				}(cli)
 			}
 			mu.Unlock()
 
