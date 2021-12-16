@@ -1,0 +1,10 @@
+go test -bench . -benchmem
+goos: darwin
+goarch: amd64
+pkg: github.com/uu64/gpl-book/ch09/ex04
+cpu: Intel(R) Core(TM) i7-1068NG7 CPU @ 2.30GHz
+BenchmarkRunPipeline10000-8     	     158	   8007992 ns/op	 1321287 B/op	   20429 allocs/op
+BenchmarkRunPipeline100000-8    	      16	  75890903 ns/op	14097690 B/op	  213460 allocs/op
+BenchmarkRunPipeline1000000-8   	       1	2084068974 ns/op	638500384 B/op	 3898653 allocs/op
+PASS
+ok  	github.com/uu64/gpl-book/ch09/ex04	5.784s
