@@ -75,6 +75,7 @@ func download(dirPath, fileName string, u *url.URL) error {
 	return err
 }
 
+// TODO: http://www.gopl.io のようなケースで dirPath が空文字列になる
 func parseURL(u *url.URL) (basename, dirPath string) {
 	urlPath := fmt.Sprintf("%s%s", u.Hostname(), u.Path)
 	elem := strings.Split(urlPath, "/")
