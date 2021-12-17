@@ -72,15 +72,15 @@ func handleConn(conn net.Conn) {
 		// NOTE: ignoring potential errors from input.Err()
 	}()
 
+L:
 	for {
 		select {
 		case <-time.After(5 * time.Minute):
-			goto L
+			break L
 		case msg := <-pipe:
 			messages <- msg
 		}
 	}
-L:
 	leaving <- user{ch, who}
 	messages <- who + " has left"
 	conn.Close()

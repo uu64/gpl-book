@@ -114,17 +114,17 @@ func handleConn(conn net.Conn) {
 		// NOTE: ignoring potential errors from input.Err()
 	}()
 
+L:
 	for {
 		select {
 		case <-closed:
-			goto L
+			break L
 		case <-time.After(5 * time.Minute):
-			goto L
+			break L
 		case msg := <-pipe:
 			messages <- msg
 		}
 	}
-L:
 }
 
 func clientWriter(conn net.Conn, ch <-chan string) {
