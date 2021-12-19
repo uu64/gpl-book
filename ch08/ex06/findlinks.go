@@ -49,7 +49,6 @@ func main() {
 	go func() { worklist <- toLinks(flag.Args(), depth) }()
 
 	// Crawl the web concurrently.
-	// NOTE: nが1のままループを抜けない
 	seen := make(map[string]bool)
 	for ; n > 0; n-- {
 		fmt.Println(n)
