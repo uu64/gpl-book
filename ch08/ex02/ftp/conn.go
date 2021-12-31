@@ -210,10 +210,7 @@ func (fc *ftpConn) stor(args []string) (status string, err error) {
 	}
 
 	defer func() {
-		// TODO: error handling
-		if err == nil {
-			fc.reply(status226)
-		} else {
+		if err != nil {
 			fc.reply(status426)
 		}
 		conn.Close()
