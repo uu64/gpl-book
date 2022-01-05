@@ -12,6 +12,8 @@ const input = `100
 Hello
 世界
 aaa
+ 
+
 `
 
 func TestCharCount(t *testing.T) {
@@ -64,8 +66,9 @@ func TestCharCount(t *testing.T) {
 		"'世'\t1",
 		"'界'\t1",
 		"'a'\t3",
-		"'\\\\n'\t4",
-		"1\t15",
+		"' '\t1",
+		"'\\\\n'\t6",
+		"1\t18",
 		"2\t0",
 		"3\t2",
 		"4\t0",
