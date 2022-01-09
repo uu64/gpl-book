@@ -52,7 +52,7 @@ func TestRandomPalindromes(t *testing.T) {
 		}
 	}
 
-	for i := 0; i < 10; i++ {
+	for i := 0; i < 1000; i++ {
 		p := randomNotPalindrome(rng)
 		if word.IsPalindrome(p) {
 			for _, r := range p {
