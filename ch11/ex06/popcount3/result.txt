@@ -1,0 +1,16 @@
+go test -bench . -benchmem
+goos: darwin
+goarch: amd64
+pkg: github.com/uu64/gpl-book/ch11/ex06/popcount3
+cpu: Intel(R) Core(TM) i7-1068NG7 CPU @ 2.30GHz
+BenchmarkPopCount-8               	317454882	         3.788 ns/op	       0 B/op	       0 allocs/op
+BenchmarkPopCount2-8              	46971850	        24.59 ns/op	       0 B/op	       0 allocs/op
+BenchmarkPopCount3-8              	884729786	         1.235 ns/op	       0 B/op	       0 allocs/op
+BenchmarkPopCountWithUintMin-8    	209241181	         5.646 ns/op	       0 B/op	       0 allocs/op
+BenchmarkPopCount2WithUintMin-8   	47199838	        25.22 ns/op	       0 B/op	       0 allocs/op
+BenchmarkPopCount3WithUintMin-8   	1000000000	         0.5710 ns/op	       0 B/op	       0 allocs/op
+BenchmarkPopCountWithUintMax-8    	326837727	         3.756 ns/op	       0 B/op	       0 allocs/op
+BenchmarkPopCount2WithUintMax-8   	50619268	        25.25 ns/op	       0 B/op	       0 allocs/op
+BenchmarkPopCount3WithUintMax-8   	28032716	        42.90 ns/op	       0 B/op	       0 allocs/op
+PASS
+ok  	github.com/uu64/gpl-book/ch11/ex06/popcount3	12.049s

@@ -1,0 +1,4 @@
+github.com/uu64/gpl-book/ch02/ex03/popcount v0.0.0-20220110133028-90ed63b5afd2 h1:uKu9fq/KuzOzv25LoZqK41L/zG+5gJ64l1CY+MfMysE=
+github.com/uu64/gpl-book/ch02/ex03/popcount v0.0.0-20220110133028-90ed63b5afd2/go.mod h1:2p4TIjL916JSxHMzRoeGAQfqU0Qo5KcNw5Uy6BVPmQQ=
+github.com/uu64/gpl-book/ch02/ex04/popcount2 v0.0.0-20220110133028-90ed63b5afd2 h1:DobUvSaI0pQ3fTnd4d/v6w1dMaJSlvsWLk2MNNw7u9k=
+github.com/uu64/gpl-book/ch02/ex04/popcount2 v0.0.0-20220110133028-90ed63b5afd2/go.mod h1:G7GAL1vibon7VcWpx7UdRQVGpYyGUk5xmmWhTPOCRGc=
