@@ -1,0 +1,27 @@
+go test -bench . -benchmem
+goos: darwin
+goarch: amd64
+pkg: github.com/uu64/gpl-book/ch11/ex07
+cpu: Intel(R) Core(TM) i7-1068NG7 CPU @ 2.30GHz
+BenchmarkIntSetAdd100-8                   	153109608	         7.934 ns/op	       0 B/op	       0 allocs/op
+BenchmarkIntSetAdd10000-8                 	132376674	         7.926 ns/op	       0 B/op	       0 allocs/op
+BenchmarkIntSetAdd1000000-8               	138546346	         8.545 ns/op	       0 B/op	       0 allocs/op
+BenchmarkIntSetAdd10000000-8              	111727963	        11.17 ns/op	       0 B/op	       0 allocs/op
+BenchmarkIntSetAdd1000000000-8            	20193534	        50.84 ns/op	      32 B/op	       0 allocs/op
+BenchmarkIntSetUnionWith100-8             	14517223	        86.38 ns/op	       0 B/op	       0 allocs/op
+BenchmarkIntSetUnionWith10000-8           	 5917238	       198.4 ns/op	       0 B/op	       0 allocs/op
+BenchmarkIntSetUnionWith1000000-8         	   98019	     12974 ns/op	      13 B/op	       0 allocs/op
+BenchmarkIntSetUnionWith10000000-8        	    8395	    130888 ns/op	    1759 B/op	       0 allocs/op
+BenchmarkIntSetUnionWith1000000000-8      	      60	  18465706 ns/op	22065563 B/op	       1 allocs/op
+BenchmarkMapIntSetAdd100-8                	152010417	         7.754 ns/op	       0 B/op	       0 allocs/op
+BenchmarkMapIntSetAdd10000-8              	153897811	         8.057 ns/op	       0 B/op	       0 allocs/op
+BenchmarkMapIntSetAdd1000000-8            	140366896	         8.369 ns/op	       0 B/op	       0 allocs/op
+BenchmarkMapIntSetAdd100000000-8          	34019689	        35.84 ns/op	       2 B/op	       0 allocs/op
+BenchmarkMapIntSetAdd10000000000-8        	       9	 193410240 ns/op	685440885 B/op	       7 allocs/op
+BenchmarkMapIntSetUnionWith100-8          	  522396	      2441 ns/op	       0 B/op	       0 allocs/op
+BenchmarkMapIntSetUnionWith10000-8        	   10000	    302667 ns/op	      86 B/op	       0 allocs/op
+BenchmarkMapIntSetUnionWith1000000-8      	   10000	   1071985 ns/op	     534 B/op	       0 allocs/op
+BenchmarkMapIntSetUnionWith10000000-8     	   10000	   1108014 ns/op	     540 B/op	       0 allocs/op
+BenchmarkMapIntSetUnionWith1000000000-8   	   10000	   1145180 ns/op	     542 B/op	       0 allocs/op
+PASS
+ok  	github.com/uu64/gpl-book/ch11/ex07	66.420s

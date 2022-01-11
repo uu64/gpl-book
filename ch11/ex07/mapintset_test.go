@@ -2,8 +2,48 @@ package intset
 
 import (
 	"fmt"
+	"math/rand"
 	"testing"
+	"time"
 )
+
+func benchmarkMapIntSetAdd(b *testing.B, size int) {
+	seed := time.Now().UTC().UnixNano()
+	// b.Logf("Random seed: %d", seed)
+	rng := rand.New(rand.NewSource(seed))
+
+	var s IntSet
+	for i := 0; i < b.N; i++ {
+		s.Add(randomNumber(rng, size))
+	}
+}
+
+func benchmarkMapIntSetUnionWith(b *testing.B, size int) {
+	seed := time.Now().UTC().UnixNano()
+	// b.Logf("Random seed: %d", seed)
+	rng := rand.New(rand.NewSource(seed))
+
+	s1, s2 := make(MapIntSet), make(MapIntSet)
+	for i := 0; i < b.N; i++ {
+		for j := 0; j < 5; j++ {
+			s1.Add(randomNumber(rng, size))
+			s2.Add(randomNumber(rng, size))
+		}
+		s1.UnionWith(s2)
+	}
+}
+
+func BenchmarkMapIntSetAdd100(b *testing.B)         { benchmarkMapIntSetAdd(b, 100) }
+func BenchmarkMapIntSetAdd10000(b *testing.B)       { benchmarkMapIntSetAdd(b, 10000) }
+func BenchmarkMapIntSetAdd1000000(b *testing.B)     { benchmarkMapIntSetAdd(b, 1000000) }
+func BenchmarkMapIntSetAdd100000000(b *testing.B)   { benchmarkMapIntSetAdd(b, 100000000) }
+func BenchmarkMapIntSetAdd10000000000(b *testing.B) { benchmarkMapIntSetAdd(b, 10000000000) }
+
+func BenchmarkMapIntSetUnionWith100(b *testing.B)        { benchmarkMapIntSetUnionWith(b, 100) }
+func BenchmarkMapIntSetUnionWith10000(b *testing.B)      { benchmarkMapIntSetUnionWith(b, 10000) }
+func BenchmarkMapIntSetUnionWith1000000(b *testing.B)    { benchmarkMapIntSetUnionWith(b, 1000000) }
+func BenchmarkMapIntSetUnionWith10000000(b *testing.B)   { benchmarkMapIntSetUnionWith(b, 10000000) }
+func BenchmarkMapIntSetUnionWith1000000000(b *testing.B) { benchmarkMapIntSetUnionWith(b, 1000000000) }
 
 func TestMapIntSet_one(t *testing.T) {
 	x, y := make(MapIntSet), make(MapIntSet)

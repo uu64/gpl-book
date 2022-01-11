@@ -2,8 +2,52 @@ package intset
 
 import (
 	"fmt"
+	"math/rand"
 	"testing"
+	"time"
 )
+
+func randomNumber(rng *rand.Rand, size int) int {
+	return rng.Intn(size)
+}
+
+func benchmarkIntSetAdd(b *testing.B, size int) {
+	seed := time.Now().UTC().UnixNano()
+	// b.Logf("Random seed: %d", seed)
+	rng := rand.New(rand.NewSource(seed))
+
+	var s IntSet
+	for i := 0; i < b.N; i++ {
+		s.Add(randomNumber(rng, size))
+	}
+}
+
+func benchmarkIntSetUnionWith(b *testing.B, size int) {
+	seed := time.Now().UTC().UnixNano()
+	// b.Logf("Random seed: %d", seed)
+	rng := rand.New(rand.NewSource(seed))
+
+	var s1, s2 IntSet
+	for i := 0; i < b.N; i++ {
+		for j := 0; j < 5; j++ {
+			s1.Add(randomNumber(rng, size))
+			s2.Add(randomNumber(rng, size))
+		}
+		s1.UnionWith(&s2)
+	}
+}
+
+func BenchmarkIntSetAdd100(b *testing.B)        { benchmarkIntSetAdd(b, 100) }
+func BenchmarkIntSetAdd10000(b *testing.B)      { benchmarkIntSetAdd(b, 10000) }
+func BenchmarkIntSetAdd1000000(b *testing.B)    { benchmarkIntSetAdd(b, 1000000) }
+func BenchmarkIntSetAdd10000000(b *testing.B)   { benchmarkIntSetAdd(b, 10000000) }
+func BenchmarkIntSetAdd1000000000(b *testing.B) { benchmarkIntSetAdd(b, 1000000000) }
+
+func BenchmarkIntSetUnionWith100(b *testing.B)        { benchmarkIntSetUnionWith(b, 100) }
+func BenchmarkIntSetUnionWith10000(b *testing.B)      { benchmarkIntSetUnionWith(b, 10000) }
+func BenchmarkIntSetUnionWith1000000(b *testing.B)    { benchmarkIntSetUnionWith(b, 1000000) }
+func BenchmarkIntSetUnionWith10000000(b *testing.B)   { benchmarkIntSetUnionWith(b, 10000000) }
+func BenchmarkIntSetUnionWith1000000000(b *testing.B) { benchmarkIntSetUnionWith(b, 1000000000) }
 
 func TestIntSet_one(t *testing.T) {
 	var x, y IntSet
