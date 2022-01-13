@@ -84,6 +84,8 @@ func (srv *Server) handler(fc *ftpConn) {
 			status, err = fc.stor(args)
 		case "NOOP":
 			status, err = fc.noop()
+		case "PWD":
+			status, err = fc.pwd()
 		// NOTE:
 		// FTP Extensions for IPv6 and NATs
 		// https://datatracker.ietf.org/doc/html/rfc2428

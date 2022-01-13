@@ -34,6 +34,7 @@ const (
 	status226 = "226 Closing data connection."
 	status230 = "230 User loggedin, proceed."
 	status250 = "250 Requested file action okay, completed."
+	status257 = "257 \"%s\" is the current directory."
 
 	// status331 = "331 User name okay, need password."
 

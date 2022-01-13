@@ -66,7 +66,6 @@ func (fc *ftpConn) isLogin() bool {
 	return fc.remote.username != nil
 }
 
-// TODO: たまに返信に失敗する
 func (fc *ftpConn) reply(status string) error {
 	_, err := fmt.Fprintf(fc.conn, "%s\n", status)
 	if err != nil {
@@ -110,6 +109,17 @@ func (fc *ftpConn) quit() (status string, err error) {
 
 func (fc *ftpConn) noop() (status string, err error) {
 	status = status200
+	return
+}
+
+func (fc *ftpConn) pwd() (status string, err error) {
+	path, err := os.Getwd()
+	if err != nil {
+		status = status550
+		return
+	}
+
+	status = fmt.Sprintf(status257, path)
 	return
 }
 
