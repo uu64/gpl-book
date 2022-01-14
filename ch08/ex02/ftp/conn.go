@@ -123,6 +123,44 @@ func (fc *ftpConn) pwd() (status string, err error) {
 	return
 }
 
+func (fc *ftpConn) cwd(args []string) (status string, err error) {
+	if !fc.isLogin() {
+		status = status530
+		return
+	}
+
+	if len(args) != 1 {
+		status = status501
+		return
+	}
+
+	path := args[0]
+	info, err := os.Stat(path)
+	if err != nil {
+		status = status550
+		return
+	}
+	if !info.IsDir() {
+		status = status550
+		return
+	}
+
+	err = os.Chdir(path)
+	if err != nil {
+		status = status550
+		return
+	}
+
+	path, err = os.Getwd()
+	if err != nil {
+		status = status550
+		return
+	}
+
+	status = fmt.Sprintf(status257, path)
+	return
+}
+
 func (fc *ftpConn) retr(args []string) (status string, err error) {
 	if !fc.isLogin() {
 		status = status530
