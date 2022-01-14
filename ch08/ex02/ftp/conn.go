@@ -6,6 +6,7 @@ import (
 	"io"
 	"net"
 	"os"
+	"path/filepath"
 	"strconv"
 )
 
@@ -134,7 +135,12 @@ func (fc *ftpConn) cwd(args []string) (status string, err error) {
 		return
 	}
 
-	path := args[0]
+	path, err := filepath.Abs(args[0])
+	if err != nil {
+		status = status550
+		return
+	}
+
 	info, err := os.Stat(path)
 	if err != nil {
 		status = status550
@@ -146,12 +152,6 @@ func (fc *ftpConn) cwd(args []string) (status string, err error) {
 	}
 
 	err = os.Chdir(path)
-	if err != nil {
-		status = status550
-		return
-	}
-
-	path, err = os.Getwd()
 	if err != nil {
 		status = status550
 		return
