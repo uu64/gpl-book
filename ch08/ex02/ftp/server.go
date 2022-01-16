@@ -88,6 +88,8 @@ func (srv *Server) handler(fc *ftpConn) {
 			status, err = fc.pwd()
 		case "CWD":
 			status, err = fc.cwd(args)
+		case "LIST":
+			status, err = fc.list(args)
 		// NOTE:
 		// FTP Extensions for IPv6 and NATs
 		// https://datatracker.ietf.org/doc/html/rfc2428

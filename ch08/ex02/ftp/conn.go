@@ -8,6 +8,7 @@ import (
 	"os"
 	"path/filepath"
 	"strconv"
+	"time"
 )
 
 type ftpConn struct {
@@ -161,6 +162,67 @@ func (fc *ftpConn) cwd(args []string) (status string, err error) {
 	return
 }
 
+func (fc *ftpConn) list(args []string) (status string, err error) {
+	if !fc.isLogin() {
+		status = status530
+		return
+	}
+
+	path := "."
+	if len(args) >= 1 {
+		path = args[0]
+	}
+
+	// get file list
+	entries, err := os.ReadDir(path)
+	if err != nil {
+		status = status550
+	}
+
+	// open data connection
+	if err = fc.reply(status150); err != nil {
+		return
+	}
+
+	conn, err := fc.openDataConn()
+	if err != nil {
+		status = status425
+		return
+	}
+
+	defer func() {
+		if err != nil {
+			status = status426
+		}
+		conn.Close()
+		fmt.Println("closed")
+	}()
+
+	var buf bytes.Buffer
+	for _, entry := range entries {
+		info, e := entry.Info()
+		if e != nil {
+			err = e
+			return
+		}
+		buf.WriteString(fmt.Sprintf("%s\t% 4d\t%s\t%s\r\n",
+			info.Mode(),
+			info.Size(),
+			info.ModTime().Format(time.RFC822),
+			entry.Name(),
+		))
+	}
+
+	_, err = io.Copy(conn, &buf)
+	if err != nil {
+		status = status451
+		return
+	}
+
+	status = status250
+	return
+}
+
 func (fc *ftpConn) retr(args []string) (status string, err error) {
 	if !fc.isLogin() {
 		status = status530
@@ -195,14 +257,11 @@ func (fc *ftpConn) retr(args []string) (status string, err error) {
 	}
 
 	defer func() {
-		// TODO: error handling
-		if err == nil {
-			fc.reply(status226)
-			status = status250
-		} else {
+		if err != nil {
 			status = status426
 		}
 		conn.Close()
+		fmt.Println("closed")
 	}()
 
 	f, err := os.Open(path)
@@ -225,6 +284,7 @@ func (fc *ftpConn) retr(args []string) (status string, err error) {
 		return
 	}
 
+	status = status250
 	return
 }
 
@@ -259,11 +319,10 @@ func (fc *ftpConn) stor(args []string) (status string, err error) {
 
 	defer func() {
 		if err != nil {
-			fc.reply(status426)
+			status = status426
 		}
 		conn.Close()
 		fmt.Println("closed")
-		status = status250
 	}()
 
 	f, err := os.Create(path)
@@ -279,7 +338,6 @@ func (fc *ftpConn) stor(args []string) (status string, err error) {
 		}
 	}()
 
-	// NOTE: 複数回同じファイルに書き込むと失敗する
 	// TODO: asciiモードでは改行コードをCRLFにする
 	_, err = io.Copy(f, conn)
 	if err != nil {
@@ -287,7 +345,7 @@ func (fc *ftpConn) stor(args []string) (status string, err error) {
 		return
 	}
 
-	status = status226
+	status = status250
 	return
 }
 
