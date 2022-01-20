@@ -1,36 +1,19 @@
 package main
 
 import (
-	"archive/tar"
-	"compress/gzip"
 	"fmt"
-	"io"
 	"log"
 	"os"
+
+	"github.com/uu64/gpl-book/ch10/ex02/archive"
+	_ "github.com/uu64/gpl-book/ch10/ex02/archive/tar"
+	_ "github.com/uu64/gpl-book/ch10/ex02/archive/zip"
 )
 
 func main() {
-	file, err := os.Open(os.Args[1])
+	names, err := archive.Read(os.Args[1])
 	if err != nil {
 		log.Fatal(err)
 	}
-	defer file.Close()
-
-	archive, err := gzip.NewReader(file)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	tr := tar.NewReader(archive)
-	for {
-		hdr, err := tr.Next()
-		if err == io.EOF {
-			break
-		}
-		if err != nil {
-			log.Fatal(err)
-		}
-
-		fmt.Println(hdr.Name)
-	}
+	fmt.Println(names)
 }
