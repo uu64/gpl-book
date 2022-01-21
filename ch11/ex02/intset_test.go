@@ -42,7 +42,7 @@ func TestIntSet_two(t *testing.T) {
 	x.Add(42)
 
 	if s := fmt.Sprint(&x); s != "{1 9 42 144}" {
-		t.Errorf("x.Sprintln(&x) got: %s, expected: {1 9 42 144}\n", s)
+		t.Errorf("x.Sprint(&x) got: %s, expected: {1 9 42 144}\n", s)
 	}
 
 	if s := x.String(); s != "{1 9 42 144}" {
@@ -50,6 +50,27 @@ func TestIntSet_two(t *testing.T) {
 	}
 
 	if s := fmt.Sprint(x); s != "{[4398046511618 0 65536]}" {
-		t.Errorf("x.Sprintln(x) got: %s, expected: {[4398046511618 0 65536]}\n", s)
+		t.Errorf("x.Sprint(x) got: %s, expected: {[4398046511618 0 65536]}\n", s)
+	}
+}
+
+func TestIntSet_three(t *testing.T) {
+	var x IntSet
+	if got := x.Has(1); got != false {
+		t.Errorf("x.Has(1) got: %v, expected: false\n", got)
+	}
+
+	x.Add(1)
+	if got := x.Has(1); got != true {
+		t.Errorf("x.Has(1) got: %v, expected: true\n", got)
+	}
+
+	if got := x.Has(1092); got != false {
+		t.Errorf("x.Has(1092) got: %v, expected: false\n", got)
+	}
+
+	x.Add(1092)
+	if got := x.Has(1092); got != true {
+		t.Errorf("x.Has(1092) got: %v, expected: true\n", got)
 	}
 }
