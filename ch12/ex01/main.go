@@ -34,4 +34,23 @@ func main() {
 	}
 	display.Display("arraymap", arraymap)
 	fmt.Println()
+
+	type Movie struct {
+		Title string
+		Year  int
+		Nums  [2]int
+	}
+	movie1 := Movie{"movie1", 2012, [2]int{1, 2}}
+	display.Display("movie1", movie1)
+	fmt.Println()
+
+	movie2 := Movie{"movie2", 2014, [2]int{4, 2}}
+	movie3 := Movie{"movie3", 2009, [2]int{5, 9}}
+	structmap := map[Movie]string{
+		movie1: "hahaha",
+		movie2: "hello",
+		movie3: "world",
+	}
+	display.Display("structmap", structmap)
+	fmt.Println()
 }

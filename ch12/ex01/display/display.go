@@ -42,14 +42,20 @@ func formatAtom(v reflect.Value) string {
 }
 
 func formatContainer(v reflect.Value) string {
+	sep := ", "
 	switch v.Kind() {
 	case reflect.Array:
 		item := []string{}
 		for i := 0; i < v.Len(); i++ {
 			item = append(item, formatAtom(v.Index(i)))
 		}
-		return fmt.Sprintf("[%s]", strings.Join(item, ","))
-	// case reflect.Struct:
+		return fmt.Sprintf("%s{%s}", v.Type(), strings.Join(item, sep))
+	case reflect.Struct:
+		item := []string{}
+		for i := 0; i < v.NumField(); i++ {
+			item = append(item, formatContainer(v.Field(i)))
+		}
+		return fmt.Sprintf("%s{%s}", v.Type(), strings.Join(item, sep))
 	default:
 		return formatAtom(v)
 	}

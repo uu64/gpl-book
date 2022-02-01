@@ -247,4 +247,30 @@ func Test(t *testing.T) {
 		// (*(*c.Tail).Tail).Value = 42
 		// ...ad infinitum...
 	}
+
+	// display maps whose keys are arrays.
+	am := map[[1]int]string{
+		{1}: "hello",
+		{2}: "world",
+		{3}: "世界",
+	}
+	Display("am", am)
+	// Output:
+	// am[[1]int{1}] = "hello"
+	// am[[1]int{2}] = "world"
+	// am[[1]int{3}] = "世界"
+
+	// display maps whose keys are structs.
+	type TestObj struct {
+		str  string
+		nums [2]int
+	}
+	sm := map[TestObj]string{
+		{"aaa", [2]int{0, 1}}: "hello",
+		{"bbb", [2]int{3, 2}}: "world",
+	}
+	Display("sm", sm)
+	// Output:
+	// sm[display.TestObj{"aaa", [2]int{0, 1}}] = "hello"
+	// sm[display.TestObj{"bbb", [2]int{3, 2}}] = "world"
 }
