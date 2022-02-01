@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"reflect"
 	"strconv"
+	"strings"
 )
 
 func Display(name string, x interface{}) {
@@ -40,6 +41,20 @@ func formatAtom(v reflect.Value) string {
 	}
 }
 
+func formatContainer(v reflect.Value) string {
+	switch v.Kind() {
+	case reflect.Array:
+		item := []string{}
+		for i := 0; i < v.Len(); i++ {
+			item = append(item, formatAtom(v.Index(i)))
+		}
+		return fmt.Sprintf("[%s]", strings.Join(item, ","))
+	// case reflect.Struct:
+	default:
+		return formatAtom(v)
+	}
+}
+
 func display(path string, v reflect.Value) {
 	switch v.Kind() {
 	case reflect.Invalid:
@@ -56,7 +71,7 @@ func display(path string, v reflect.Value) {
 	case reflect.Map:
 		for _, key := range v.MapKeys() {
 			display(fmt.Sprintf("%s[%s]", path,
-				formatAtom(key)), v.MapIndex(key))
+				formatContainer(key)), v.MapIndex(key))
 		}
 	case reflect.Ptr:
 		if v.IsNil() {

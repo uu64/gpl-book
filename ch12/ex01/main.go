@@ -1,6 +1,10 @@
 package main
 
-import "github.com/uu64/gpl-book/ch12/ex01/display"
+import (
+	"fmt"
+
+	"github.com/uu64/gpl-book/ch12/ex01/display"
+)
 
 func main() {
 	m := map[string]int{
@@ -9,14 +13,25 @@ func main() {
 		"hello": -34,
 	}
 	display.Display("m", m)
+	fmt.Println()
 
-	array := [3]int{
+	array1 := [3]int{
 		2, 3, 4,
 	}
-	display.Display("array", array)
+	display.Display("array", array1)
+	fmt.Println()
 
+	array2 := [3]int{
+		4, 5, 6,
+	}
+	array3 := [3]int{
+		7, 8, 9,
+	}
 	arraymap := map[[3]int]string{
-		array: "hahaha",
+		array1: "hahaha",
+		array2: "hello",
+		array3: "world",
 	}
 	display.Display("arraymap", arraymap)
+	fmt.Println()
 }
