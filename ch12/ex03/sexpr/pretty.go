@@ -185,7 +185,7 @@ func pretty(p *printer, v reflect.Value) error {
 	case reflect.Ptr:
 		return pretty(p, v.Elem())
 
-	default: // float, complex, bool, chan, func, interface
+	default: // chan, func, interface
 		return fmt.Errorf("unsupported type: %s", v.Type())
 	}
 	return nil
