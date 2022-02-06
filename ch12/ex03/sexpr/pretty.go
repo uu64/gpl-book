@@ -124,6 +124,15 @@ func pretty(p *printer, v reflect.Value) error {
 		reflect.Uint32, reflect.Uint64, reflect.Uintptr:
 		p.stringf("%d", v.Uint())
 
+	case reflect.Float32, reflect.Float64:
+		p.stringf("%f", v.Float())
+
+	case reflect.Complex64, reflect.Complex128:
+		p.stringf("%g", v.Complex())
+
+	case reflect.Bool:
+		p.stringf("%t", v.Bool())
+
 	case reflect.String:
 		p.stringf("%q", v.String())
 

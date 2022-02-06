@@ -22,6 +22,7 @@ func Test(t *testing.T) {
 	type Movie struct {
 		Title, Subtitle string
 		Year            int
+		Color           bool
 		Actor           map[string]string
 		Oscars          []string
 		Sequel          *string
@@ -30,6 +31,7 @@ func Test(t *testing.T) {
 		Title:    "Dr. Strangelove",
 		Subtitle: "How I Learned to Stop Worrying and Love the Bomb",
 		Year:     1964,
+		Color:    true,
 		Actor: map[string]string{
 			"Dr. Strangelove":            "Peter Sellers",
 			"Grp. Capt. Lionel Mandrake": "Peter Sellers",
@@ -75,14 +77,14 @@ func Test(t *testing.T) {
 
 func Test2(t *testing.T) {
 	type Complex struct {
-		re float32
-		im float32
-		c  complex64
+		Re  float32
+		Im  float32
+		Cpl complex64
 	}
 	c := Complex{
-		re: 3.0,
-		im: 8.2,
-		c:  complex(3.0, 8.2),
+		Re:  3.0,
+		Im:  8.2,
+		Cpl: complex(3, 8),
 	}
 
 	// Encode it
@@ -92,22 +94,138 @@ func Test2(t *testing.T) {
 	}
 	t.Logf("Marshal() = %s\n", data)
 
-	// // Decode it
-	// var cpl Complex
-	// if err := Unmarshal(data, &cpl); err != nil {
-	// 	t.Fatalf("Unmarshal failed: %v", err)
-	// }
-	// t.Logf("Unmarshal() = %+v\n", cpl)
+	// Decode it
+	var cpl Complex
+	if err := Unmarshal(data, &cpl); err != nil {
+		t.Fatalf("Unmarshal failed: %v", err)
+	}
+	t.Logf("Unmarshal() = %+v\n", cpl)
 
-	// // Check equality.
-	// if !reflect.DeepEqual(cpl, c) {
-	// 	t.Fatal("not equal")
-	// }
+	// Check equality.
+	if !reflect.DeepEqual(cpl, c) {
+		t.Fatal("not equal")
+	}
 
-	// // Pretty-print it:
-	// data, err = MarshalIndent(c)
-	// if err != nil {
-	// 	t.Fatal(err)
-	// }
-	// t.Logf("MarshalIdent() = %s\n", data)
+	// Pretty-print it:
+	data, err = MarshalIndent(c)
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Logf("MarshalIdent() = %s\n", data)
+}
+
+func Test3(t *testing.T) {
+
+	// Encode it
+	data, err := Marshal(float32(2.3))
+	if err != nil {
+		t.Fatalf("Marshal failed: %v", err)
+	}
+	t.Logf("Marshal() = %s\n", data)
+
+	// Decode it
+	var f float32
+	if err := Unmarshal(data, &f); err != nil {
+		t.Fatalf("Unmarshal failed: %v", err)
+	}
+	t.Logf("Unmarshal() = %+v\n", f)
+
+	// Check equality.
+	if float32(2.3) != f {
+		t.Fatal("not equal")
+	}
+
+	// Pretty-print it:
+	data, err = MarshalIndent(f)
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Logf("MarshalIdent() = %s\n", data)
+}
+
+func Test4(t *testing.T) {
+
+	// Encode it
+	data, err := Marshal(complex(2.3, 5))
+	if err != nil {
+		t.Fatalf("Marshal failed: %v", err)
+	}
+	t.Logf("Marshal() = %s\n", data)
+
+	// Decode it
+	var cpl complex128
+	if err := Unmarshal(data, &cpl); err != nil {
+		t.Fatalf("Unmarshal failed: %v", err)
+	}
+	t.Logf("Unmarshal() = %+v\n", cpl)
+
+	// Check equality.
+	if complex(2.3, 5) != cpl {
+		t.Fatal("not equal")
+	}
+
+	// Pretty-print it:
+	data, err = MarshalIndent(cpl)
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Logf("MarshalIdent() = %s\n", data)
+}
+
+func Test5(t *testing.T) {
+
+	// Encode it
+	data, err := Marshal(true)
+	if err != nil {
+		t.Fatalf("Marshal failed: %v", err)
+	}
+	t.Logf("Marshal() = %s\n", data)
+
+	// Decode it
+	var b bool
+	if err := Unmarshal(data, &b); err != nil {
+		t.Fatalf("Unmarshal failed: %v", err)
+	}
+	t.Logf("Unmarshal() = %+v\n", b)
+
+	// Check equality.
+	if true != b {
+		t.Fatal("not equal")
+	}
+
+	// Pretty-print it:
+	data, err = MarshalIndent(b)
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Logf("MarshalIdent() = %s\n", data)
+}
+
+func Test6(t *testing.T) {
+
+	// Encode it
+	data, err := Marshal(nil)
+	if err != nil {
+		t.Fatalf("Marshal failed: %v", err)
+	}
+	t.Logf("Marshal() = %s\n", data)
+
+	// Decode it
+	var b bool
+	if err := Unmarshal(data, &b); err != nil {
+		t.Fatalf("Unmarshal failed: %v", err)
+	}
+	t.Logf("Unmarshal() = %+v\n", b)
+
+	// Check equality.
+	if false != b {
+		t.Fatal("not equal")
+	}
+
+	// Pretty-print it:
+	data, err = MarshalIndent(b)
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Logf("MarshalIdent() = %s\n", data)
 }

@@ -84,6 +84,11 @@ func read(lex *lexer, v reflect.Value) {
 			lex.next()
 			return
 		}
+		if lex.text() == "t" {
+			v.SetBool(true)
+			lex.next()
+			return
+		}
 	case scanner.String:
 		s, _ := strconv.Unquote(lex.text()) // NOTE: ignoring errors
 		v.SetString(s)
@@ -94,9 +99,25 @@ func read(lex *lexer, v reflect.Value) {
 		v.SetInt(int64(i))
 		lex.next()
 		return
+	case scanner.Float:
+		i, _ := strconv.ParseFloat(lex.text(), 64) // NOTE: ignoring errors
+		v.SetFloat(i)
+		lex.next()
+		return
 	case '(':
 		lex.next()
 		readList(lex, v)
+		lex.next() // consume ')'
+		return
+	case '#':
+		lex.next()
+		lex.next() // consume 'C'
+		lex.next() // consume '('
+		re, _ := strconv.ParseFloat(lex.text(), 64)
+		lex.next() // consume ' '
+		im, _ := strconv.ParseFloat(lex.text(), 64)
+		v.SetComplex(complex128(complex(re, im)))
+		// readList(lex, v)
 		lex.next() // consume ')'
 		return
 	}
