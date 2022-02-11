@@ -79,7 +79,7 @@ func (p *printer) end() {
 func (p *printer) space() {
 	last := len(p.stack) - 1
 	x := p.stack[last]
-	if x.kind == kBlank || x.kind == kBr {
+	if x.kind == kBlank {
 		p.stack = p.stack[:last] // pop
 	}
 	t := &token{kind: kBlank}
@@ -90,7 +90,7 @@ func (p *printer) space() {
 func (p *printer) lineBreak() {
 	last := len(p.stack) - 1
 	x := p.stack[last]
-	if x.kind == kBlank || x.kind == kBr {
+	if x.kind == kBr {
 		p.stack = p.stack[:last] // pop
 	}
 	t := &token{kind: kBr}
