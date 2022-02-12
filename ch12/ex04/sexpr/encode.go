@@ -88,15 +88,8 @@ func (p *printer) space() {
 	p.rtotal++
 }
 func (p *printer) lineBreak() {
-	last := len(p.stack) - 1
-	x := p.stack[last]
-	if x.kind == kBr {
-		p.stack = p.stack[:last] // pop
-	}
 	t := &token{kind: kBr}
 	p.tokens = append(p.tokens, t)
-	p.stack = append(p.stack, t)
-	p.rtotal++
 }
 func (p *printer) print(t *token) {
 	// fmt.Printf("%d, %d, %s, %d\n", p.indents, t.kind, t.str, p.width)
