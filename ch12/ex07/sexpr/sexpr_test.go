@@ -125,6 +125,9 @@ func TestStream(t *testing.T) {
 		Oscars          []string
 		Sequel          *string
 	}
+	var message struct {
+		Name, Text string
+	}
 
 	tests := []struct {
 		encoded string
@@ -163,15 +166,29 @@ func TestStream(t *testing.T) {
 				"Best Director (Nomin.)"
 				"Best Picture (Nomin.)")))
 		`, &movie},
+		{`
+		((Name "Ed")
+		 (Text "Knock knock."))
+		((Name "Sam")
+		 (Text "Who's there?"))
+		((Name "Ed")
+		 (Text "Go fmt."))
+		((Name "Sam")
+		 (Text "Go fmt who?"))
+		((Name "Ed")
+		 (Text "Go fmt yourself!"))
+		`, &message},
 	}
 
 	for _, test := range tests {
 		dec := NewDecoder(strings.NewReader(test.encoded))
-		// Decode it
-		err := dec.Decode(test.decoded)
-		if err != nil {
-			t.Fatalf("Marshal failed: %v", err)
+		for dec.More() {
+			// Decode it
+			err := dec.Decode(test.decoded)
+			if err != nil {
+				t.Fatalf("Decode failed: %v", err)
+			}
+			t.Logf("Decode() = \n%v\n", test.decoded)
 		}
-		t.Logf("Decode() = \n%v\n", test.decoded)
 	}
 }
