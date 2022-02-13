@@ -81,6 +81,11 @@ func Test(t *testing.T) {
 			"Best Picture (Nomin.)",
 		},
 	}
+	type Res struct {
+		Data interface{}
+	}
+	var res Res
+	movieRes := Res{strangelove}
 
 	tests := []struct {
 		encoded interface{}
@@ -95,6 +100,7 @@ func Test(t *testing.T) {
 		{count, &dict},
 		{count2, &dictarray},
 		{strangelove, &movie},
+		{movieRes, &res},
 	}
 
 	for _, test := range tests {
@@ -151,6 +157,12 @@ func TestEmpty(t *testing.T) {
 		Oscars:   nil,
 	}
 
+	type Res struct {
+		Data interface{}
+	}
+	var res Res
+	movieRes := Res{nil}
+
 	tests := []struct {
 		encoded interface{}
 		decoded interface{}
@@ -164,6 +176,7 @@ func TestEmpty(t *testing.T) {
 		{count, &dict},
 		{count2, &dictarray},
 		{strangelove, &movie},
+		{movieRes, &res},
 	}
 
 	for _, test := range tests {

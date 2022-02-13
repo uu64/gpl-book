@@ -155,7 +155,10 @@ func isZeroValue(v reflect.Value) (bool, error) {
 	case reflect.Ptr:
 		return isZeroValue(v.Elem())
 
-	default: // chan, func, interface
+	case reflect.Interface:
+		return isZeroValue(reflect.ValueOf(v.Interface()))
+
+	default: // chan, func
 		return false, fmt.Errorf("unsupported type: %s", v.Type())
 	}
 }
@@ -245,7 +248,10 @@ func pretty(p *printer, v reflect.Value) error {
 	case reflect.Ptr:
 		return pretty(p, v.Elem())
 
-	default: // chan, func, interface
+	case reflect.Interface:
+		return pretty(p, reflect.ValueOf(v.Interface()))
+
+	default: // chan, func
 		return fmt.Errorf("unsupported type: %s", v.Type())
 	}
 	return nil
