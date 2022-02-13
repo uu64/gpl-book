@@ -92,4 +92,20 @@ func main() {
 		log.Fatal(err)
 	}
 	fmt.Println(string(b7))
+
+	type Res struct {
+		Data interface{}
+	}
+	res := Res{strangelove}
+	b8, err := sexpr.Marshal(res)
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println(string(b8))
+
+	b9, err := json.Marshal(res)
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println(string(b9))
 }

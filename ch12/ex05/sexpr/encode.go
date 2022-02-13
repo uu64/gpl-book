@@ -170,13 +170,11 @@ func pretty(p *printer, v reflect.Value) error {
 				p.string(",")
 				p.lineBreak()
 			}
-			p.begin()
 			p.stringf("%q", v.Type().Field(i).Name)
 			p.sep()
 			if err := pretty(p, v.Field(i)); err != nil {
 				return err
 			}
-			p.end()
 		}
 		p.end()
 		p.lineBreak()
@@ -191,7 +189,6 @@ func pretty(p *printer, v reflect.Value) error {
 				p.string(",")
 				p.lineBreak()
 			}
-			p.begin()
 			switch key.Kind() {
 			case reflect.Int, reflect.Int8, reflect.Int16,
 				reflect.Int32, reflect.Int64:
@@ -211,7 +208,6 @@ func pretty(p *printer, v reflect.Value) error {
 			if err := pretty(p, v.MapIndex(key)); err != nil {
 				return err
 			}
-			p.end()
 		}
 		p.end()
 		p.lineBreak()
@@ -220,7 +216,10 @@ func pretty(p *printer, v reflect.Value) error {
 	case reflect.Ptr:
 		return pretty(p, v.Elem())
 
-	default: // complex, map, chan, func, interface
+	case reflect.Interface:
+		return pretty(p, reflect.ValueOf(v.Interface()))
+
+	default: // complex, map, chan, func
 		return fmt.Errorf("unsupported type: %s", v.Type())
 	}
 	return nil
