@@ -8,8 +8,6 @@ import (
 	"text/scanner"
 )
 
-type decodeMode int
-
 type Decoder struct {
 	lex *lexer
 }
