@@ -31,7 +31,7 @@ func (dec *Decoder) Decode(v interface{}) (err error) {
 	defer func() {
 		// NOTE: this is not an example of ideal error handling.
 		if x := recover(); x != nil {
-			err = fmt.Errorf("error at %s: %v", lex.scan.Position, x)
+			err = fmt.Errorf("decode error at %s: %v", lex.scan.Position, x)
 		}
 	}()
 
@@ -60,7 +60,7 @@ func (dec *Decoder) Unmarshal(out interface{}) (err error) {
 	defer func() {
 		// NOTE: this is not an example of ideal error handling.
 		if x := recover(); x != nil {
-			err = fmt.Errorf("error at %s: %v", lex.scan.Position, x)
+			err = fmt.Errorf("unmarshal error at %s: %v", lex.scan.Position, x)
 		}
 	}()
 	read(lex, reflect.ValueOf(out).Elem())

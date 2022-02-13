@@ -54,28 +54,35 @@ func read(lex *lexer, v reflect.Value) {
 		// "nil" and struct field names.
 		if lex.text() == "nil" {
 			v.Set(reflect.Zero(v.Type()))
-			lex.next()
-			return
 		}
 		if lex.text() == "t" {
-			v.SetBool(true)
-			lex.next()
-			return
+			v.Set(reflect.ValueOf(true))
 		}
+		lex.next()
+		return
 	case scanner.String:
 		s, _ := strconv.Unquote(lex.text()) // NOTE: ignoring errors
-		v.SetString(s)
+		v.Set(reflect.ValueOf(s))
 		lex.next()
 		return
 	case scanner.Int:
 		i, _ := strconv.Atoi(lex.text()) // NOTE: ignoring errors
-		fmt.Println(v.Kind())
-		v.SetInt(int64(i))
+		switch v.Kind() {
+		case reflect.Interface:
+			v.Set(reflect.ValueOf(i))
+		default:
+			v.SetInt(int64(i))
+		}
 		lex.next()
 		return
 	case scanner.Float:
 		i, _ := strconv.ParseFloat(lex.text(), 64) // NOTE: ignoring errors
-		v.SetFloat(i)
+		switch v.Kind() {
+		case reflect.Interface:
+			v.Set(reflect.ValueOf(i))
+		default:
+			v.SetFloat(i)
+		}
 		lex.next()
 		return
 	case '(':
@@ -90,7 +97,12 @@ func read(lex *lexer, v reflect.Value) {
 		re, _ := strconv.ParseFloat(lex.text(), 64)
 		lex.next() // consume ' '
 		im, _ := strconv.ParseFloat(lex.text(), 64)
-		v.SetComplex(complex128(complex(re, im)))
+		switch v.Kind() {
+		case reflect.Interface:
+			v.Set(reflect.ValueOf(complex(re, im)))
+		default:
+			v.SetComplex(complex128(complex(re, im)))
+		}
 		// readList(lex, v)
 		lex.next() // consume ')'
 		return
@@ -135,6 +147,9 @@ func readList(lex *lexer, v reflect.Value) {
 			v.SetMapIndex(key, value)
 			lex.consume(')')
 		}
+
+	// TODO: 未実装
+	// case reflect.Interface:
 
 	default:
 		panic(fmt.Sprintf("cannot decode list into %v", v.Kind()))

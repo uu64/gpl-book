@@ -208,12 +208,6 @@ func pretty(p *printer, v reflect.Value) error {
 	case reflect.Struct: // ((name value ...)
 		p.begin()
 		for i := 0; i < v.NumField(); i++ {
-			if isZero, err := isZeroValue(v.Field(i)); isZero {
-				continue
-			} else if err != nil {
-				return err
-			}
-
 			if i > 0 {
 				p.lineBreak()
 			}
