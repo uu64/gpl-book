@@ -65,4 +65,21 @@ func main() {
 		log.Fatal(err)
 	}
 	fmt.Println(string(b3))
+
+	type Res struct {
+		Data interface{}
+	}
+	res := Res{c}
+	b4, err := sexpr.Marshal(res)
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println(string(b4))
+
+	res2 := Res{45}
+	b5, err := sexpr.Marshal(res2)
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println(string(b5))
 }
