@@ -192,6 +192,9 @@ func pretty(p *printer, v reflect.Value) error {
 	case reflect.Ptr:
 		return pretty(p, v.Elem())
 
+	case reflect.Interface:
+		return pretty(p, reflect.ValueOf(v.Interface()))
+
 	default: // chan, func, interface
 		return fmt.Errorf("unsupported type: %s", v.Type())
 	}

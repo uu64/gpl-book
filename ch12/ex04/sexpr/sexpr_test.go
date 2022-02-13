@@ -18,7 +18,7 @@ import (
 //
 // 	$ go test -v gopl.io/ch12/sexpr
 //
-func Test(t *testing.T) {
+func TestEncodeStruct1(t *testing.T) {
 	type Movie struct {
 		Title, Subtitle string
 		Year            int
@@ -53,7 +53,7 @@ func Test(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Marshal failed: %v", err)
 	}
-	t.Logf("Marshal() = %s\n", data)
+	t.Logf("Marshal() = \n%s\n", data)
 
 	// Decode it
 	var movie Movie
@@ -68,7 +68,7 @@ func Test(t *testing.T) {
 	}
 }
 
-func Test2(t *testing.T) {
+func TestEncodeStruct2(t *testing.T) {
 	type Complex struct {
 		Re  float32
 		Im  float32
@@ -85,7 +85,7 @@ func Test2(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Marshal failed: %v", err)
 	}
-	t.Logf("Marshal() = %s\n", data)
+	t.Logf("Marshal() = \n%s\n", data)
 
 	// Decode it
 	var cpl Complex
@@ -100,14 +100,14 @@ func Test2(t *testing.T) {
 	}
 }
 
-func Test3(t *testing.T) {
+func TestEncodeFloat(t *testing.T) {
 
 	// Encode it
 	data, err := Marshal(float32(2.3))
 	if err != nil {
 		t.Fatalf("Marshal failed: %v", err)
 	}
-	t.Logf("Marshal() = %s\n", data)
+	t.Logf("Marshal() = \n%s\n", data)
 
 	// Decode it
 	var f float32
@@ -122,14 +122,13 @@ func Test3(t *testing.T) {
 	}
 }
 
-func Test4(t *testing.T) {
-
+func TestEncodeComplex(t *testing.T) {
 	// Encode it
 	data, err := Marshal(complex(2.3, 5))
 	if err != nil {
 		t.Fatalf("Marshal failed: %v", err)
 	}
-	t.Logf("Marshal() = %s\n", data)
+	t.Logf("Marshal() = \n%s\n", data)
 
 	// Decode it
 	var cpl complex128
@@ -144,14 +143,14 @@ func Test4(t *testing.T) {
 	}
 }
 
-func Test5(t *testing.T) {
+func TestEncodeBool1(t *testing.T) {
 
 	// Encode it
 	data, err := Marshal(true)
 	if err != nil {
 		t.Fatalf("Marshal failed: %v", err)
 	}
-	t.Logf("Marshal() = %s\n", data)
+	t.Logf("Marshal() = \n%s\n", data)
 
 	// Decode it
 	var b bool
@@ -166,14 +165,14 @@ func Test5(t *testing.T) {
 	}
 }
 
-func Test6(t *testing.T) {
+func TestEncodeBool2(t *testing.T) {
 
 	// Encode it
 	data, err := Marshal(nil)
 	if err != nil {
 		t.Fatalf("Marshal failed: %v", err)
 	}
-	t.Logf("Marshal() = %s\n", data)
+	t.Logf("Marshal() = \n%s\n", data)
 
 	// Decode it
 	var b bool
@@ -186,4 +185,39 @@ func Test6(t *testing.T) {
 	if false != b {
 		t.Fatal("not equal")
 	}
+}
+func TestEncodeInterface(t *testing.T) {
+	type Res struct {
+		Data interface{}
+	}
+	res := Res{struct {
+		Name, Message string
+	}{"taro", "hello"}}
+
+	// Encode it
+	data, err := Marshal(res)
+	if err != nil {
+		t.Fatalf("Marshal failed: %v", err)
+	}
+	t.Logf("Marshal() = \n%s\n", data)
+
+	// NOTE: interface のデコーダは12.10で実装する
+	// // Decode it
+	// var r Res
+	// if err := Unmarshal(data, &r); err != nil {
+	// 	t.Fatalf("Unmarshal failed: %v", err)
+	// }
+	// t.Logf("Unmarshal() = %+v\n", r)
+
+	// // Check equality.
+	// if !reflect.DeepEqual(res, r) {
+	// 	t.Fatal("not equal")
+	// }
+
+	// // Pretty-print it:
+	// data, err = MarshalIndent(r)
+	// if err != nil {
+	// 	t.Fatal(err)
+	// }
+	// t.Logf("MarshalIdent() = %s\n", data)
 }
