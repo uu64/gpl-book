@@ -1,79 +1,30 @@
-// Copyright © 2016 Alan A. A. Donovan & Brian W. Kernighan.
-// License: https://creativecommons.org/licenses/by-nc-sa/4.0/
-
-// See page 362.
-//
-// The version of this program that appeared in the first and second
-// printings did not comply with the proposed rules for passing
-// pointers between Go and C, described here:
-// https://github.com/golang/proposal/blob/master/design/12416-cgo-pointers.md
-//
-// The rules forbid a C function like bz2compress from storing 'in'
-// and 'out' (pointers to variables allocated by Go) into the Go
-// variable 's', even temporarily.
-//
-// The version below, which appears in the third printing, has been
-// corrected.  To comply with the rules, the bz_stream variable must
-// be allocated by C code.  We have introduced two C functions,
-// bz2alloc and bz2free, to allocate and free instances of the
-// bz_stream type.  Also, we have changed bz2compress so that before
-// it returns, it clears the fields of the bz_stream that contain
-// pointers to Go variables.
-
-//!+
-
-// Package bzip provides a writer that uses bzip2 compression (bzip.org).
 package bzip
 
-/*
-#cgo CFLAGS: -I/usr/include
-#cgo LDFLAGS: -L/usr/lib -lbz2
-#include <bzlib.h>
-#include <stdlib.h>
-bz_stream* bz2alloc() { return calloc(1, sizeof(bz_stream)); }
-int bz2compress(bz_stream *s, int action,
-                char *in, unsigned *inlen, char *out, unsigned *outlen);
-void bz2free(bz_stream* s) { free(s); }
-*/
-import "C"
-
 import (
+	"bufio"
+	"fmt"
 	"io"
 	"os"
 	"os/exec"
 	"sync"
-	"unsafe"
 )
 
 const bzip2Path = "/usr/bin/bzip2"
 
 type writer struct {
-	w      io.Writer // underlying output stream
-	stream *C.bz_stream
-	outbuf [64 * 1024]byte
+	w      *bufio.Writer // underlying output stream
 	mu     sync.Mutex
-	cmd    *exec.Cmd
 	tempfile string
 }
 
 // NewWriter returns a writer for bzip2-compressed streams.
 func NewWriter(out io.Writer) io.WriteCloser {
-	const blockSize = 9
-	const verbosity = 0
-	const workFactor = 30
-	cmd := exec.Command(bzip2Path)
-	w := &writer{w: out, stream: C.bz2alloc(), cmd: cmd}
-	C.BZ2_bzCompressInit(w.stream, blockSize, verbosity, workFactor)
+	fmt.Println("init")
+	w := &writer{w: bufio.NewWriter(out)}
 	return w
 }
 
-//!-
-
-//!+write
 func (w *writer) Write(data []byte) (int, error) {
-	if w.stream == nil {
-		panic("closed")
-	}
 	var total int // uncompressed bytes written
 
 	w.mu.Lock()
@@ -85,7 +36,8 @@ func (w *writer) Write(data []byte) (int, error) {
 	}
 	defer f.Close()
 
-	total, err = f.Write(data)
+	bw := bufio.NewWriter(f)
+	total, err = bw.Write(data)
 	if err != nil {
 		return total, err
 	}
@@ -100,31 +52,19 @@ func (w *writer) Write(data []byte) (int, error) {
 // Close flushes the compressed data and closes the stream.
 // It does not close the underlying io.Writer.
 func (w *writer) Close() error {
-	if w.stream == nil {
-		panic("closed")
-	}
 	w.mu.Lock()
-	defer func() {
-		C.BZ2_bzCompressEnd(w.stream)
-		C.bz2free(w.stream)
-		w.stream = nil
-		w.mu.Unlock()
-	}()
+	defer w.mu.Unlock()
 
-	w.cmd.Args = []string{"-c", w.tempfile}
-	w.cmd.Run()
-
-	for {
-		inlen, outlen := C.uint(0), C.uint(cap(w.outbuf))
-		r := C.bz2compress(w.stream, C.BZ_FINISH, nil, &inlen,
-			(*C.char)(unsafe.Pointer(&w.outbuf)), &outlen)
-		if _, err := w.w.Write(w.outbuf[:outlen]); err != nil {
-			return err
-		}
-		if r == C.BZ_STREAM_END {
-			return nil
-		}
+	b, err := exec.Command(bzip2Path, "-c", w.tempfile).Output()
+	if err != nil {
+		return err
 	}
+
+	_, err = w.w.Write(b)
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 //!-close

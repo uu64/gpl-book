@@ -6,6 +6,7 @@ package bzip_test
 import (
 	"bytes"
 	"compress/bzip2" // reader
+	"fmt"
 	"io"
 	"testing"
 
@@ -16,10 +17,13 @@ func TestBzip2(t *testing.T) {
 	var compressed, uncompressed bytes.Buffer
 	w := bzip.NewWriter(&compressed)
 
+	fmt.Println("initialize")
 	// Write a repetitive message in a million pieces,
 	// compressing one copy but not the other.
+	fmt.Println("start loop")
 	tee := io.MultiWriter(w, &uncompressed)
 	for i := 0; i < 1000000; i++ {
+		fmt.Println(i)
 		io.WriteString(tee, "hello")
 	}
 	if err := w.Close(); err != nil {

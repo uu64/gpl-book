@@ -19,10 +19,8 @@ func main() {
 
 	w.Write(b)
 
-	// if err := w.Close(); err != nil {
-	// 	log.Fatal(err)
-	// }
-	// os.WriteFile("sampledata.dat.bz2", compressed.Bytes(), 0644)
-
-
+	if err := w.Close(); err != nil {
+		log.Fatal(err)
+	}
+	os.WriteFile("sampledata4.dat.bz2", compressed.Bytes(), 0644)
 }
