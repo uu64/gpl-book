@@ -39,6 +39,7 @@ import "C"
 
 import (
 	"io"
+	"os"
 	"os/exec"
 	"sync"
 	"unsafe"
@@ -52,6 +53,7 @@ type writer struct {
 	outbuf [64 * 1024]byte
 	mu     sync.Mutex
 	cmd    *exec.Cmd
+	tempfile string
 }
 
 // NewWriter returns a writer for bzip2-compressed streams.
@@ -75,25 +77,26 @@ func (w *writer) Write(data []byte) (int, error) {
 	var total int // uncompressed bytes written
 
 	w.mu.Lock()
-	for len(data) > 0 {
-		inlen, outlen := C.uint(len(data)), C.uint(cap(w.outbuf))
-		C.bz2compress(w.stream, C.BZ_RUN,
-			(*C.char)(unsafe.Pointer(&data[0])), &inlen,
-			(*C.char)(unsafe.Pointer(&w.outbuf)), &outlen)
-		total += int(inlen)
-		data = data[inlen:]
-		if _, err := w.w.Write(w.outbuf[:outlen]); err != nil {
-			return total, err
-		}
+
+	dir := os.TempDir()
+	f, err := os.CreateTemp(dir, "gobzip2")
+	if err != nil {
+		return total, err
 	}
+	defer f.Close()
+
+	total, err = f.Write(data)
+	if err != nil {
+		return total, err
+	}
+
+	w.tempfile = f.Name()
+
 	w.mu.Unlock()
 
 	return total, nil
 }
 
-//!-write
-
-//!+close
 // Close flushes the compressed data and closes the stream.
 // It does not close the underlying io.Writer.
 func (w *writer) Close() error {
@@ -107,6 +110,10 @@ func (w *writer) Close() error {
 		w.stream = nil
 		w.mu.Unlock()
 	}()
+
+	w.cmd.Args = []string{"-c", w.tempfile}
+	w.cmd.Run()
+
 	for {
 		inlen, outlen := C.uint(0), C.uint(cap(w.outbuf))
 		r := C.bz2compress(w.stream, C.BZ_FINISH, nil, &inlen,
