@@ -22,5 +22,5 @@ func main() {
 	if err := w.Close(); err != nil {
 		log.Fatal(err)
 	}
-	os.WriteFile("sampledata4.dat.bz2", compressed.Bytes(), 0644)
+	os.WriteFile("sampledata.dat.bz2", compressed.Bytes(), 0644)
 }

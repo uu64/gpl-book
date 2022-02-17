@@ -46,11 +46,10 @@ func (w *writer) Close() error {
 	dir := os.TempDir()
 	f, err := os.CreateTemp(dir, "gobzip2")
 	if err != nil {
-		f.Close()
 		return err
 	}
+	defer f.Close()
 	f.Write(w.buf.Bytes())
-	f.Close()
 
 	b, err := exec.Command(bzip2Path, "-c", f.Name()).Output()
 	if err != nil {
