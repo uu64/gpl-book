@@ -1,8 +1,7 @@
 package bzip
 
 import (
-	"bufio"
-	"fmt"
+	"bytes"
 	"io"
 	"os"
 	"os/exec"
@@ -12,15 +11,14 @@ import (
 const bzip2Path = "/usr/bin/bzip2"
 
 type writer struct {
-	w      *bufio.Writer // underlying output stream
-	mu     sync.Mutex
-	tempfile string
+	w   io.Writer // underlying output stream
+	buf bytes.Buffer
+	mu  sync.Mutex
 }
 
 // NewWriter returns a writer for bzip2-compressed streams.
 func NewWriter(out io.Writer) io.WriteCloser {
-	fmt.Println("init")
-	w := &writer{w: bufio.NewWriter(out)}
+	w := &writer{w: out}
 	return w
 }
 
@@ -29,20 +27,10 @@ func (w *writer) Write(data []byte) (int, error) {
 
 	w.mu.Lock()
 
-	dir := os.TempDir()
-	f, err := os.CreateTemp(dir, "gobzip2")
+	total, err := w.buf.Write(data)
 	if err != nil {
 		return total, err
 	}
-	defer f.Close()
-
-	bw := bufio.NewWriter(f)
-	total, err = bw.Write(data)
-	if err != nil {
-		return total, err
-	}
-
-	w.tempfile = f.Name()
 
 	w.mu.Unlock()
 
@@ -55,7 +43,16 @@ func (w *writer) Close() error {
 	w.mu.Lock()
 	defer w.mu.Unlock()
 
-	b, err := exec.Command(bzip2Path, "-c", w.tempfile).Output()
+	dir := os.TempDir()
+	f, err := os.CreateTemp(dir, "gobzip2")
+	if err != nil {
+		f.Close()
+		return err
+	}
+	f.Write(w.buf.Bytes())
+	f.Close()
+
+	b, err := exec.Command(bzip2Path, "-c", f.Name()).Output()
 	if err != nil {
 		return err
 	}
