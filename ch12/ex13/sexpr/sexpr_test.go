@@ -126,11 +126,11 @@ func TestUnmarshal(t *testing.T) {
 	var dictarray map[int][]string
 	var movie struct {
 		Title, Subtitle string
-		Year            int
-		Color           bool
-		Actor           map[string]string
-		Oscars          []string
-		Sequel          *string
+		Year            int               `sexpr:"yyyy"`
+		Color           bool              `sexpr:"clr"`
+		Actor           map[string]string `sexpr:"actor"`
+		Oscars          []string          `sexpr:"oscars"`
+		Sequel          *string           `sexpr:"sequel"`
 	}
 	var res struct {
 		Data interface{}
@@ -160,15 +160,15 @@ func TestUnmarshal(t *testing.T) {
 		{`
 		((Title "Dr. Strangelove")
 		(Subtitle "How I Learned to Stop Worrying and Love the Bomb")
-		(Year 1964)
-		(Color t)
-		(Actor (("Dr. Strangelove" "Peter Sellers")
+		(yyyy 1964)
+		(clr t)
+		(actor (("Dr. Strangelove" "Peter Sellers")
 				("Grp. Capt. Lionel Mandrake" "Peter Sellers")
 				("Pres. Merkin Muffley" "Peter Sellers")
 				("Gen. Buck Turgidson" "George C. Scott")
 				("Brig. Gen. Jack D. Ripper" "Sterling Hayden")
 				("Maj. T.J. \"King\" Kong" "Slim Pickens")))
-		(Oscars ("Best Actor (Nomin.)"
+		(oscars ("Best Actor (Nomin.)"
 				"Best Adapted Screenplay (Nomin.)"
 				"Best Director (Nomin.)"
 				"Best Picture (Nomin.)")))
