@@ -246,7 +246,12 @@ func pretty(p *printer, v reflect.Value) error {
 		p.end()
 
 	case reflect.Ptr:
-		return pretty(p, v.Elem())
+		t := v.Elem().Type().String()
+		p.stringf(fmt.Sprintf("(\"%s\" ", t))
+		if err := pretty(p, reflect.ValueOf(v.Interface())); err != nil {
+			return err
+		}
+		p.string(")")
 
 	case reflect.Interface:
 		return pretty(p, reflect.ValueOf(v.Interface()))
