@@ -113,56 +113,6 @@ func (p *printer) stringf(format string, args ...interface{}) {
 	p.string(fmt.Sprintf(format, args...))
 }
 
-func isZeroValue(v reflect.Value) (bool, error) {
-	switch v.Kind() {
-	case reflect.Invalid:
-		return true, nil
-
-	case reflect.Int, reflect.Int8, reflect.Int16,
-		reflect.Int32, reflect.Int64:
-		return v.Int() == 0, nil
-
-	case reflect.Uint, reflect.Uint8, reflect.Uint16,
-		reflect.Uint32, reflect.Uint64, reflect.Uintptr:
-		return v.Uint() == 0, nil
-
-	case reflect.Float32, reflect.Float64:
-		return v.Float() == 0, nil
-
-	case reflect.Complex64, reflect.Complex128:
-		c := v.Complex()
-		return real(c) == 0 && imag(c) == 0, nil
-
-	case reflect.Bool:
-		return !v.Bool(), nil
-
-	case reflect.String:
-		return v.String() == "", nil
-
-	case reflect.Array, reflect.Slice: // (value ...)
-		return v.Len() == 0, nil
-
-	case reflect.Struct: // ((name value ...)
-		// フィールドすべて調べるのはコストが高そうなのでfalseを返す
-		return false, nil
-
-	case reflect.Map: // ((key value ...)
-		for range v.MapKeys() {
-			return false, nil
-		}
-		return true, nil
-
-	case reflect.Ptr:
-		return isZeroValue(v.Elem())
-
-	case reflect.Interface:
-		return isZeroValue(reflect.ValueOf(v.Interface()))
-
-	default: // chan, func, interface
-		return false, fmt.Errorf("unsupported type: %s", v.Type())
-	}
-}
-
 func pretty(p *printer, v reflect.Value) error {
 	switch v.Kind() {
 	case reflect.Invalid:
@@ -243,7 +193,12 @@ func pretty(p *printer, v reflect.Value) error {
 		return pretty(p, v.Elem())
 
 	case reflect.Interface:
-		return pretty(p, reflect.ValueOf(v.Interface()))
+		t := v.Elem().Type().String()
+		p.stringf(fmt.Sprintf("(\"%s\" ", t))
+		if err := pretty(p, reflect.ValueOf(v.Interface())); err != nil {
+			return err
+		}
+		p.string(")")
 
 	default: // chan, func, interface
 		return fmt.Errorf("unsupported type: %s", v.Type())

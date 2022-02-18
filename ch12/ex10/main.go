@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"fmt"
 	"log"
 	"strings"
@@ -37,4 +38,19 @@ func main() {
 		log.Fatalf("Decode failed: %v", err)
 	}
 	fmt.Printf("Decode() = \n%v\n", sample)
+
+	type Res struct {
+		Data interface{}
+	}
+	r := Res{[]int{1, 2, 3}}
+	b2, _ := sexpr.Marshal(r)
+	fmt.Println(string(b2))
+
+	dec2 := sexpr.NewDecoder(bytes.NewReader(b2))
+	var res Res
+	err = dec2.Unmarshal(&res)
+	if err != nil {
+		log.Fatalf("Decode failed: %v", err)
+	}
+	fmt.Printf("Decode() = \n%v\n", res)
 }

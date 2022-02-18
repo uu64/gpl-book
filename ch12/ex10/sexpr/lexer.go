@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"reflect"
 	"strconv"
+	"strings"
 	"text/scanner"
 )
 
@@ -148,8 +149,23 @@ func readList(lex *lexer, v reflect.Value) {
 			lex.consume(')')
 		}
 
-	// TODO: 未実装
-	// case reflect.Interface:
+	case reflect.Interface:
+		for !endList(lex) {
+			stype := strings.Trim(lex.text(), "\"")
+			var tmp reflect.Value
+			switch stype{
+			case "[]int":
+				tmp = reflect.New(reflect.TypeOf([]int{})).Elem()
+			case "int":
+				tmp = reflect.New(reflect.TypeOf(1)).Elem()
+			// 実際はその他の型を定義して設定する必要がある
+			default:
+				panic(fmt.Sprintf("unsupported type %q", stype))
+			}
+			lex.next()
+			read(lex, tmp)
+			v.Set(tmp)
+		}
 
 	default:
 		panic(fmt.Sprintf("cannot decode list into %v", v.Kind()))
