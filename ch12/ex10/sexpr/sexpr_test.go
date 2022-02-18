@@ -176,8 +176,7 @@ func TestUnmarshal(t *testing.T) {
 		{`
 		((Data 34))
 		`, &res},
-		{`
-		((Data ("[]int" (1 2 3))))`, &res},
+		{`((Data ("[]int" (1 2 3))))`, &res},
 	}
 
 	for _, test := range tests {

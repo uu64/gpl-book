@@ -249,7 +249,12 @@ func pretty(p *printer, v reflect.Value) error {
 		return pretty(p, v.Elem())
 
 	case reflect.Interface:
-		return pretty(p, reflect.ValueOf(v.Interface()))
+		t := v.Elem().Type().String()
+		p.stringf(fmt.Sprintf("(\"%s\" ", t))
+		if err := pretty(p, reflect.ValueOf(v.Interface())); err != nil {
+			return err
+		}
+		p.string(")")
 
 	default: // chan, func, interface
 		return fmt.Errorf("unsupported type: %s", v.Type())
