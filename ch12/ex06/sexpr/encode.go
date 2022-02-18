@@ -143,8 +143,14 @@ func isZeroValue(v reflect.Value) (bool, error) {
 		return v.Len() == 0, nil
 
 	case reflect.Struct: // ((name value ...)
-		// フィールドすべて調べるのはコストが高そうなのでfalseを返す
-		return false, nil
+		f := true
+		for i := 0; i < v.NumField(); i++ {
+			if !v.Field(i).IsZero() {
+				f = false
+				break
+			}
+		}
+		return f, nil
 
 	case reflect.Map: // ((key value ...)
 		for range v.MapKeys() {
