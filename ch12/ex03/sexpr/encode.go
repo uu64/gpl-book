@@ -103,7 +103,12 @@ func encode(buf *bytes.Buffer, v reflect.Value) error {
 		buf.WriteByte(')')
 
 	case reflect.Interface:
-		return encode(buf, reflect.ValueOf(v.Interface()))
+		t := v.Elem().Type().String()
+		buf.WriteString(fmt.Sprintf("(\"%s\" ", t))
+		if err := encode(buf, reflect.ValueOf(v.Interface())); err != nil {
+			return err
+		}
+		buf.WriteByte(')')
 
 	default: // chan, func
 		return fmt.Errorf("unsupported type: %s", v.Type())

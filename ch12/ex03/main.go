@@ -82,4 +82,11 @@ func main() {
 		log.Fatal(err)
 	}
 	fmt.Println(string(b5))
+
+	res3 := Res{[]int{1, 2, 3}}
+	b6, err := sexpr.Marshal(res3)
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println(string(b6))
 }
